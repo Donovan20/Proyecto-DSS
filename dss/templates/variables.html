@@ -35,26 +35,27 @@
 	<div class="limiter">
 		<div class="container-login">
 			<div class="wrap-login">
-
+				<form method="POST">
+					{% csrf_token %}
 					<span class="login-form-title" style="font-family: Montserrat-Bold; color: #4E5B6D;">
 						SELECCIONE UNA VARIABLE
 					</span>
 			
 					<div class="container-login-form-btn">
-						<a class="variable-form-btn">
+						<button name="dolar" class="variable-form-btn">
 							VARIABLE 1
 							<p>
 								Lorem ipsum dolor sit amet, consectetur 
 							</p>
-						</a>
+						</button>
 					</div>
 					<div class="container-login-form-btn">
-						<a class="variable-form-btn">
+						<button name="pib" class="variable-form-btn">
 							VARIABLE 2
 							<p>
 								Lorem ipsum dolor sit amet, consectetur 
 							</p>							
-						</a>
+						</button>
 					</div>
 
 

@@ -19,7 +19,21 @@ def login_sistema(request):
 
 @login_required
 def variables_view(request, username):
-    return render(request, 'variables.html')
+    if  request.method == 'GET':
+        return render(request, 'variables.html')
+    elif request.method == 'POST':
+        if 'dolar' in request.POST:
+            print('dolar')
+        elif 'pib' in request.POST:
+            print('pib')
+
+@login_required
+def calculos_dolar(request, username):
+    pass
+
+@login_required
+def calculos_pib(request, username):
+    pass
 
 @login_required
 def logout_view(request):
