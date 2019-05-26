@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,20 +6,20 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="images/icons/icono.ico"/>
+	<link rel="icon" type="image/png" href="{% static 'images/icons/icono.ico' %}"/>
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
 <!--===============================================================================================-->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
 <!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="css/util.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 <!--===============================================================================================-->
 </head>
 <body>
@@ -31,16 +32,24 @@
 		<div class="container-login">
 			<div class="wrap-login">
 				<div class="login-pic js-tilt" data-tilt>
-					<img src="images/img-01.png" alt="IMG">
+					<img src="{% static 'images/img-01.png' %}" alt="IMG">
 				</div>
 
-				<form class="login-form validate-form">
+				<form method="POST" class="login-form validate-form">
+					{% csrf_token %}
 					<span class="login-form-title" style="font-family: Montserrat-Bold; color: #4E5B6D;">
 						INGRESAR AL SISTEMA
 					</span>
-
+					{% if error %}
+						<div class="alert alert-danger alert-dismissible fade show">
+							<span>{{ error }}</span>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					{% endif %}
 					<div class="wrap-input validate-input" data-validate = "Se requiere un usuario válido">
-						<input class="input" type="text"  placeholder="Usuario">
+						<input class="input" type="text" name="username" placeholder="Usuario">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-user" aria-hidden="true"></i>
@@ -49,7 +58,7 @@
 					</div>
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere una contraseña">
-						<input class="input" type="password" placeholder="Contraseña">
+						<input class="input" type="password" name="password" placeholder="Contraseña">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fa fa-lock" aria-hidden="true"></i>
@@ -57,9 +66,8 @@
 					</div>
 					
 					<div class="container-login-form-btn">
-						<button class="login-form-btn">
-							Iniciar sesión
-						</button>
+						<input type="submit" value="Iniciar Sesión" class="login-form-btn">
+						</input>
 					</div>
 
 				</form>
@@ -71,21 +79,21 @@
 
 	
 <!--===============================================================================================-->	
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
 <!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
 <!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
+	<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
 <!--===============================================================================================-->
-	<script src="vendor/tilt/tilt.jquery.min.js"></script>
+	<script src="{% static 'vendor/tilt/tilt.jquery.min.js' %}"></script>
 	<script >
 		$('.js-tilt').tilt({
 			scale: 1.1
 		})
 	</script>
 <!--===============================================================================================-->
-	<script src="js/main.js"></script>
+	<script src="{% static 'js/main.js' %}"></script>
 
 </body>
 </html>
