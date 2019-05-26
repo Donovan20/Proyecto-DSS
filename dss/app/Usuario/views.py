@@ -13,9 +13,13 @@ def login_sistema(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return render(request, 'variables.html')
+            return redirect('usuario:variables', username=username)
         else:
             return render(request, 'index.html', {'error': 'Usuario o contraseña incorrectos.'})
+
+@login_required
+def variables_view(request, username):
+    return render(request, 'variables.html')
 
 @login_required
 def logout_view(request):
