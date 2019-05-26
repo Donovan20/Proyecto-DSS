@@ -5,7 +5,7 @@ class PIB(models.Model):
     frecuencia = models.DecimalField(max_digits=10,decimal_places=4)
 
 class Dolar(models.Model):
-    periodo = models.IntegerField()
+    periodo = models.TextField(max_length=30)
     frecuencia = models.DecimalField(max_digits=10, decimal_places=4)
 
 
