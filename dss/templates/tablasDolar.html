@@ -1,0 +1,87 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Datos</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="{% static 'images/icons/icono.ico' %}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+	<link rel="stylesheet" href="{% static 'css/tabla.css' %}">
+<!--===============================================================================================-->
+
+</head>
+<body>
+
+	<nav class="navbar navbar-light nav">
+	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
+	  <form class="form-inline">
+	    <button class="btn " type="submit">Página principal</button>
+	    <button class="btn " type="submit">Cerrar sesión</button>
+	  </form>
+	</nav>
+	
+	<div class="limiter">
+		<div class="container-login">
+			<div class="wrap-login">
+				<div>
+					<p>
+					RESULTADOS
+					</p>
+				</div>
+
+				<table class="content-table">
+					<thead>
+				      <th scope="col">Período</th>
+				      <th scope="col">Frecuencia</th>
+				      <th scope="col">PS</th>
+				      <th scope="col">PMS k={{ values.k }}</th>
+				      <th scope="col">PMD j={{ values.j }}</th>
+				      <th scope="col">A</th>
+				      <th scope="col">B</th>
+				      <th scope="col">PMDA M={{ values.m }}</th>
+				      <th scope="col">TMAC</th>
+				      <th scope="col">PTMAC</th>
+				      <th scope="col">PSE alfa={{ values.alfa }} & SE={{ values.pse }}</th>
+					</tr>
+				  </thead>
+				  <tbody>
+						{% for periodo,frecuencia,s,ms,md,a,b,mda,mac,tmac,se in zipped %}
+				    <tr>
+				      <td>{{ perido }}</td>
+							<td>{{ frecuencia }}</td>
+							<td>{{ s }}</td>
+				      <td>{{ ms }}</td>
+				      <td>{{ md }}</td>
+				      <td>{{ a }}</td>
+				      <td>{{ b }}</td>
+				      <td>{{ mda }}</td>
+				      <td>{{ mac }}</td>
+				      <td>{{ tmac }}</td>
+				      <td>{{ se }}</td>
+						</tr>
+						{% endfor %}
+				    
+				  </tbody>
+				</table>
+				<a href="{% url 'usuario:grafica_dolar' request.user.username %}">Ver gráfica</a>
+			</div>
+		</div>
+	</div>
+	
+
+</body>
+</html>

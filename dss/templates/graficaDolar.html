@@ -1,0 +1,158 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Gráfica</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="{% static 'images/icons/icono.ico' %}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<!--===============================================================================================-->
+
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+  (async function carga(){
+    URL = `http://127.0.0.1:8000/obtener_data/`
+    
+    async function obtenerData(url){
+      const response = await fetch(url)
+      const data = await response.json()
+      return data;
+    }
+    
+    const dataLista = await obtenerData(URL);
+    console.log(dataLista)
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('number', 'Frecuencia');
+      data.addColumn('number', 'PS');
+      data.addColumn('number', 'PMS');
+      data.addColumn('number', 'PMD');
+      
+      data.addRows([
+        [1,  37.8, 80.8, 41.8],
+        [2,  30.9, 69.5, 32.4],
+        [3,  25.4,   57, 25.7],
+        [4,  11.7, 18.8, 10.5],
+        [5,  11.9, 17.6, 10.4],
+        [6,   8.8, 13.6,  7.7],
+        [7,   7.6, 12.3,  9.6],
+        [8,  12.3, 29.2, 10.6],
+        [9,  16.9, 42.9, 14.8],
+        [10, 12.8, 30.9, 11.6],
+        [11,  5.3,  7.9,  4.7],
+        [12,  6.6,  8.4,  5.2],
+        [13,  4.8,  6.3,  3.6],
+        [14,  4.2,  6.2,  3.4]
+      ]);
+      // ([
+      //   ['Year', 'Sales', 'lol'],
+      //   [ '2014', `${dataLista.frecuencias.forEach((element) => {
+      //     console.log(typeof(element))
+      //     return element
+      //   })}`,
+      //   `${dataLista.ps.forEach((element) => {
+      //     return element
+      //   })}`]
+      // ]);
+
+      var options = {
+        chart: {
+          title: 'Box Office Earnings in First Two Weeks of Opening',
+          subtitle: 'in millions of dollars (USD)'
+        },
+        width: 900,
+        height: 500
+      };
+//       ${Object.keys(dataLista).map((llave) => {
+
+// })}
+      var chart = new google.charts.Line(document.getElementById('linechart_material'));
+
+      chart.draw(data,  google.charts.Line.convertOptions(options));
+    }
+  })()
+  </script>
+
+   <script type="text/javascript">
+      google.charts.load('current', {'packages':['gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Memory', 80]
+        ]);
+
+        var options = {
+          width: 800, height: 240,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+        setInterval(function() {
+          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 5000);
+        setInterval(function() {
+          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart.draw(data, options);
+        }, 26000);
+      }
+    </script>
+
+</head>
+<body>
+	
+	<nav class="navbar navbar-light nav">
+	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
+	  <form class="form-inline">
+	    <button class="btn " type="submit">Página principal</button>
+	    <button class="btn " type="submit">Cerrar sesión</button>
+	  </form>
+	</nav>
+
+
+<div class="limiter wrapper">
+		<div class="container-login ">
+			<div class="wrap-login">
+
+				<div class="centrar">
+						<div class="grafica" id="linechart_material" style="width: 600px; height: 334px;"></div>
+						<div class="medidor" id="chart_div" style="width: 400px; height: 120px;"></div>
+				</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
