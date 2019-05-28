@@ -30,7 +30,7 @@ p{
 .content-table thead tr {
   background-color: #2BAC99;
   color: #ffffff;
-  text-align: left;
+  text-align: center;
   font-weight: bold;
 
 }
@@ -55,4 +55,35 @@ p{
 .content-table tbody tr.active-row {
   font-weight: bold;
   color: #009879;
+}
+
+
+.vergrafica{
+  margin-left: auto;
+  margin-right: auto;
+  font-family: Montserrat-Bold;
+  font-size: 15px;
+  line-height: 1.5;
+  background-color: #2FBBA6;
+  color: #fff;
+  width: 40%;
+  height: 40px;
+  border-radius: 5px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 25px;
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.vergrafica:hover {
+  background: #29A593;
+  color: #fff;
 }

@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="{% static 'images/icons/icono.ico' %}"/>
+<link rel="icon" type="image/png" href="{% static 'images/icons/icono.ico' %}"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
 <!--===============================================================================================-->
@@ -27,8 +27,9 @@
 	<nav class="navbar navbar-light nav">
 	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
 	  <form class="form-inline">
-	    <button class="btn " type="submit">Página principal</button>
-	    <button class="btn " type="submit">Cerrar sesión</button>
+	  	<a href="acerca.html" class="btnbar" >Acerca de</a>
+	  	<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
+	    <a href="" class="btnbar">Cerrar sesión</a>
 	  </form>
 	</nav>
 	
@@ -36,13 +37,14 @@
 		<div class="container-login">
 			<div class="wrap-login">
 
-				<form class="login-form validate-form" style="margin-top: -100px !important; margin-bottom: 50px;">
+				<form class="login-form validate-form centrado" style="margin-top: -100px !important; margin-bottom: 50px;" method="POST">
+					{% csrf_token %}
 					<span class="login-form-title" style="font-family: Montserrat-Bold; color: #4E5B6D;">
 						Ingrese las configuraciones
 					</span>
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="text"  placeholder="k">
+						<input class="input" type="number"  placeholder="k" name="k">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
@@ -51,7 +53,7 @@
 					</div>
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="password" placeholder="j">
+						<input class="input" type="number" placeholder="j" name="j">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
@@ -59,7 +61,7 @@
 					</div>
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="text"  placeholder="α">
+						<input class="input" type="text"  placeholder="α" name="alpha">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
@@ -67,29 +69,36 @@
 						</span>
 					</div>
 
+
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="text"  placeholder="Pronóstico PSE">
+					    						<span class="focus-input"></span>
+					    <select name="pse">
+				            <option value="ps">Promedio simple</option>
+
+				            <option value="pmd">Promedio móvil doble</option>
+
+				            <option value="pms">Promedio móvil simple</option>
+
+				            <option value="pmda">Promedio móvil doble ajustdo</option>
+				        </select>
+
+						<span class="symbol-input">
+							<i class="fas fa-cog" aria-hidden="true"></i>
+							
+						</span>
+					</div>
+
+					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
+						<input class="input" type="number"  placeholder="m" name="m">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
 							
 						</span>
 					</div>
-
-					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="text"  placeholder="m">
-						<span class="focus-input1"></span>
-						<span class="symbol-input">
-							<i class="fas fa-cog" aria-hidden="true"></i>
-							
-						</span>
-					</div>
-
-
-
-					
+	
 					<div class="container-login-form-btn">
-						<button class="login-form-btn">
+						<button class="login-form-btn" name="pib">
 							Aceptar
 						</button>
 					</div>

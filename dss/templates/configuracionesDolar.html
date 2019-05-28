@@ -94,8 +94,17 @@
                     {% endif %}
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" name="pse" value="{{value.pse}}" type="text"  placeholder="Pronóstico PSE">
-						<span class="focus-input"></span>
+							<span class="focus-input"></span>
+						<select name="pse">
+							<option value="ps">Promedio simple</option>
+
+							<option value="pmd">Promedio móvil doble</option>
+
+							<option value="pms">Promedio móvil simple</option>
+
+							<option value="pmda">Promedio móvil doble ajustdo</option>
+						</select>
+
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
 							
