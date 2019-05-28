@@ -4,14 +4,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
-
-from rest_framework.renderers import JSONRenderer
 # Modelos
 from app.Usuario.models import Dolar
 
 # Variables globales
-data = {}
+dataP = {}
+dataD = {}
 
 import math
 from operator import itemgetter
@@ -21,11 +19,6 @@ from app.Usuario.models import PIB
 
 
 # Create your views here.
-class JSONResponse(HttpResponse):
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
 
 def truncate(n, decimals=0):
     multiplier = 10 ** decimals
@@ -62,7 +55,7 @@ def config_dolar(request, username):
         k = request.POST['k']
         j = request.POST['j']
         alfa = request.POST['alfa']
-        pse = request.POST['pse']
+        opcion = request.POST['pse']
         m = request.POST['m']
         n = Dolar.objects.all().count()
         error = {}
@@ -84,18 +77,18 @@ def config_dolar(request, username):
                 'k': k,
                 'j': j,
                 'alfa': alfa,
-                'pse': pse,
+                'pse': opcion,
                 'm': m
             }
             return render(request, 'configuracionesDolar.html', {'errores': error, 'value': values})
         else:
-            global data
+            global dataD
 
             values = {
                 'k': k,
                 'j': j,
                 'alfa': alfa,
-                'pse': pse,
+                'pse': opcion,
                 'm': m
             }
             dolar = Dolar.objects.all()
@@ -103,11 +96,14 @@ def config_dolar(request, username):
             frecuencias = []
             for d in dolar:
                 periodos.append(d.periodo)
-                frecuencias.append(d.frecuencia)
+                frecuencias.append(float(d.frecuencia))
 
             acumuladorPS = 0
             contador = 1
             ps = []
+            k = int(k)
+            j = int(j)
+            m = int(m)
             for i in range(1, int(n)+1):
                 acumuladorPS = acumuladorPS + (dolar[i - 1].frecuencia)
                 ps.append(truncate((acumuladorPS / contador),5))
@@ -158,9 +154,29 @@ def config_dolar(request, username):
                 ptmac.append(truncate((float(frecuencias[x])+(float(frecuencias[x])*(tmac[x-1]/100))),5))
             
             psel = []
-            for x in range(1, len(frecuencias)):
-                psel.append(truncate((float(ps[x-1])+(float(alfa)*(float(frecuencias[x])-float(ps[x-1])))),5))
+            if opcion == "ps":
+                for x in range(1,len(frecuencias)):
+                    res = float(ps[x])+(float(alfa)*(float(frecuencias[x]) - float(ps[x])))
+                    psel.append(truncate(res,5))
 
+                for c in range(2):
+                    psel.insert(0,0)
+                    
+            if opcion == "pmd":
+                for x in range(k+j,len(frecuencias)):
+                    psel.append(truncate(float(pmd[x-k-j])+(float(alfa)*(float(frecuencias[x]) - float(pmd[x-k-j]))),5))
+                for c in range(j+k+1):
+                    psel.insert(0,0)
+            if opcion == "pms":
+                for x in range(k,len(frecuencias)):
+                    psel.append(truncate(float(pms[x-k])+(float(alfa)*(float(frecuencias[x]) - float(pms[x-k]))),5))
+                for c in range(k+1):
+                    psel.insert(0,0)
+            if opcion == "pmda":
+                for x in range(k+j,len(frecuencias)):
+                    psel.append(truncate(float(pmda[x-k-j])+(float(alfa)*(float(frecuencias[x]) - float(pmda[x-k-j]))),5))
+                for c in range(j+k+1):
+                    psel.insert(0,0)
             # Insertar 0's al principio dependiendo de k y j
             for c in range(1):
                 ps.insert(0,0)
@@ -186,16 +202,15 @@ def config_dolar(request, username):
                 tmac.insert(0,0)
             for c in range(2):
                 ptmac.insert(0,0)
-            for c in range(2):
-                psel.insert(0,0)
 
             zipped = zip(periodos, frecuencias, ps, pms, pmd, As, Bs, pmda, tmac, ptmac, psel)
             contexto = {
                 'zipped': zipped,
                 'values': values
             }
-            data = {
-                    'frecuencias': frecuencias,
+            dataD = {
+                    'p': periodos,
+                    'f': frecuencias,
                     'ps': ps,
                     'pms': pms,
                     'pmd': pmd,
@@ -210,27 +225,18 @@ def config_dolar(request, username):
 
 @login_required
 def grafica_dolar(request, username):
-    return render(request, 'graficaDolar.html')
-
-@csrf_exempt
-def obtener_data(request):
-    if request.method == 'GET':
-        global data
-        print(data)
-        return JSONResponse(data, status=200)
+    messages.success(request, 'ok')
+    global dataD
+    return render(request, 'graficaDolar.html',dataD)
 
 
 @login_required
 def calculos_pib(request, username):
     if request.method == 'GET':
         messages.success(request, 'ok')
-        global data
-        return render(request,'grafica.html', data)
+        global dataP
+        return render(request,'grafica.html', dataP)
 
-
-def truncate(number, digits) -> float:
-    stepper = pow(10.0, digits)
-    return math.trunc(stepper * number) / stepper
 
 @login_required
 def configuraciones_pib(request,username):
@@ -387,7 +393,6 @@ def configuraciones_pib(request,username):
                                 epsel.insert(0,0)
                         if opcion == "pmda":
                             for x in range(k+j,len(f)):
-
                                 psel.append(truncate(float(pmda[x-k-j])+(alpha*(float(f[x]) - float(pmda[x-k-j]))),5))
                             for x in range(k+j+1,len(f)-1):
                                 resta = abs(f[x] - psel[x-k-j-1])
@@ -440,8 +445,8 @@ def configuraciones_pib(request,username):
                             {'valor':aepsel,'Nombre':'Suavizacion exponencial'}
                         ]
                         minimo = min(errores, key=itemgetter("valor"))
-                        global data
-                        data = {
+                        global dataP
+                        dataP = {
                             'p': p,
                             'f': f,
                             'ps': ps,

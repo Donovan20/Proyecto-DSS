@@ -21,116 +21,146 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 <!--===============================================================================================-->
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-  (async function carga(){
-    URL = `http://127.0.0.1:8000/obtener_data/`
-    
-    async function obtenerData(url){
-      const response = await fetch(url)
-      const data = await response.json()
-      return data;
-    }
-    
-    const dataLista = await obtenerData(URL);
-    console.log(dataLista)
-
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('number', 'Frecuencia');
-      data.addColumn('number', 'PS');
-      data.addColumn('number', 'PMS');
-      data.addColumn('number', 'PMD');
-      
-      data.addRows([
-        [1,  37.8, 80.8, 41.8],
-        [2,  30.9, 69.5, 32.4],
-        [3,  25.4,   57, 25.7],
-        [4,  11.7, 18.8, 10.5],
-        [5,  11.9, 17.6, 10.4],
-        [6,   8.8, 13.6,  7.7],
-        [7,   7.6, 12.3,  9.6],
-        [8,  12.3, 29.2, 10.6],
-        [9,  16.9, 42.9, 14.8],
-        [10, 12.8, 30.9, 11.6],
-        [11,  5.3,  7.9,  4.7],
-        [12,  6.6,  8.4,  5.2],
-        [13,  4.8,  6.3,  3.6],
-        [14,  4.2,  6.2,  3.4]
-      ]);
-      // ([
-      //   ['Year', 'Sales', 'lol'],
-      //   [ '2014', `${dataLista.frecuencias.forEach((element) => {
-      //     console.log(typeof(element))
-      //     return element
-      //   })}`,
-      //   `${dataLista.ps.forEach((element) => {
-      //     return element
-      //   })}`]
-      // ]);
-
-      var options = {
-        chart: {
-          title: 'Box Office Earnings in First Two Weeks of Opening',
-          subtitle: 'in millions of dollars (USD)'
-        },
-        width: 900,
-        height: 500
-      };
-//       ${Object.keys(dataLista).map((llave) => {
-
-// })}
-      var chart = new google.charts.Line(document.getElementById('linechart_material'));
-
-      chart.draw(data,  google.charts.Line.convertOptions(options));
-    }
-  })()
-  </script>
-
-   <script type="text/javascript">
-      google.charts.load('current', {'packages':['gauge']});
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
+        var array1 = {{ p|safe }};
+        var array2 = {{ f|safe }};
+        var array3 = {{ ps|safe }};
+        var array4 = {{ pms|safe }};
+        var array5 = {{ pmd|safe }};
+        var array6 = {{ pmda|safe }};
+        var array8 = {{ ptmac|safe }};
+        var array9 = {{ psel|safe }};
+        var grafica =[]
 
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['Memory', 80]
-        ]);
-
+        for(x in array1){
+          grafica.push([array1[x],array2[x],array3[x],array4[x],array5[x],array6[x], array8[x],array9[x]])
+        }
+        var data = new google.visualization.DataTable()
+        data.addColumn('string', 'Periodos');
+        data.addColumn('number', 'Frecuencias');
+        data.addColumn('number', 'Promedio Simple');
+        data.addColumn('number', 'Promedio Móvil Simple');
+        data.addColumn('number', 'Promedio Móvil Doble');
+        data.addColumn('number', 'Promedio Móvil Doble Ajustado');
+        data.addColumn('number', 'P. Tasa de Crecimiento Anual');
+        data.addColumn('number', 'Suavizacion Exponencial');
+        data.addRows(grafica)
         var options = {
-          width: 800, height: 240,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
+          title: 'Precio del Dolar en México',
+          curveType: 'function',
+          legend: { position: 'bottom' }
         };
 
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
         chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
       }
     </script>
 
+
 </head>
+<style>
+  *{
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  body{
+   font-family: sans-serif;
+  }
+  a:link,
+  a:visited{
+   text-decoration: none;
+  }
+  .modal{
+	color: #5F5F5F;
+	text-align: center;
+	font-family: sans-serif;
+  }
+  .modal_contenido{
+   width: 35%;
+   height: 25%;
+   background-color: #fff;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   padding: 2em;
+   border-radius: 1em;
+   opacity: 0;
+   visibility: hidden;
+   transition: all .5s;
+   box-shadow: 0 4px 6px -1px rgba(0.3, 0.3, 0.3, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+   color: #484848;
+  }
+  #modal:target{
+   opacity: 1;
+   visibility: visible;
+  }
+  #modal:target .modal_contenido{
+   opacity: 1;
+   visibility: visible;
+  }
+  .cerrar_modal{
+   color: red;
+   font-size: 2em;
+   position: absolute;
+   top: .5em;
+   right: 1em;
+  }
+  .modal_titulo{
+   color: #238F80;
+   margin-bottom: 1em;
+  }
+  .modal_texto{
+   line-height: 1.5em;
+  }
+.abrir_modal{
+ display: inline-block;
+ color: dodgerblue;
+ margin: 2em;
+}
+ </style>
 <body>
-	
+    <div class="modal" id="modal">
+        <div class="modal_contenido">
+          <a href="#" class="cerrar_modal">&times;</a>
+          <h2 class="modal_titulo">Descarga iniciada</h2>
+          <p class="modal_texto">Se ha generado y descargado tu reporte en formato PDF. <br> Revisa tu carpeta de descargas.</p>
+        </div>
+    </div>
+    <script>
+        function abrirModal(){
+          var mod = document.getElementById("modal")
+          mod.style.visibility="visible"
+          mod.style.color = "dodgerblue"
+          mod.style.margin = "2em"
+          window.location.href="#modal"
+        }
+      </script>
+  {% for message in messages %}
+    {% if message|stringformat:'s' == "ok" %}
+    <script class="modal">
+        function alert(){
+          swal({
+            title: "Se ha generado y descargado tu reporte en formato PDF",
+            text: "Revisa tu carpeta de descargas",
+            icon: "success",
+            confirm: "Aceptar"
+        
+          })
+        
+        }
+        </script>
+    {% endif %}
+  {% endfor %}
 	<nav class="navbar navbar-light nav">
 	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
 	  <form class="form-inline">
@@ -143,10 +173,9 @@
 <div class="limiter wrapper">
 		<div class="container-login ">
 			<div class="wrap-login">
-
+        <h3>La mejor opcion es {{mejor.Nombre}} con un promedio de errores de {{mejor.valor}}</h3>
 				<div class="centrar">
-						<div class="grafica" id="linechart_material" style="width: 600px; height: 334px;"></div>
-						<div class="medidor" id="chart_div" style="width: 400px; height: 120px;"></div>
+						<div class="grafica" id="curve_chart" style="width: 1000px; height: 800px;"></div>
 				</div>
 
 				</form>

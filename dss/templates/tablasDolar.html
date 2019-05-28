@@ -59,9 +59,9 @@
 					</tr>
 				  </thead>
 				  <tbody>
-						{% for periodo,frecuencia,s,ms,md,a,b,mda,mac,tmac,se in zipped %}
+						{% for periodos,frecuencia,s,ms,md,a,b,mda,mac,tmac,se in zipped %}
 				    <tr>
-				      <td>{{ perido }}</td>
+				      <td>{{ periodos }}</td>
 							<td>{{ frecuencia }}</td>
 							<td>{{ s }}</td>
 				      <td>{{ ms }}</td>
@@ -77,7 +77,7 @@
 				    
 				  </tbody>
 				</table>
-				<a href="{% url 'usuario:grafica_dolar' request.user.username %}">Ver gráfica</a>
+				<a href="{% url 'usuario:grafica_dolar' request.user.username %}" class="vergrafica">Ver gráfica</a>
 			</div>
 		</div>
 	</div>
