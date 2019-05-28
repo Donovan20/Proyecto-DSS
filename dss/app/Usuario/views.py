@@ -6,16 +6,20 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 # Modelos
 from app.Usuario.models import Dolar
+from app.Usuario.models import PIB
 
+# PDF
+from app.Usuario.render import PIBRenderPdf
 # Variables globales
 dataP = {}
 dataD = {}
 
 import math
 from operator import itemgetter
-
+import base64
+from io import BytesIO
 # models
-from app.Usuario.models import PIB
+
 
 
 # Create your views here.
@@ -238,6 +242,35 @@ def calculos_pib(request, username):
         return render(request,'grafica.html', dataP)
 
 
+def renderPIB(request):
+    imagen = request.POST['input']
+    imagen = imagen.split(',',1)
+    imagen = str.encode(imagen[1])
+    with open("grafica.png", "wb") as fh:
+        fh.write(base64.decodebytes(imagen))
+
+    imagen2 = request.POST['input2']
+    imagen2 = imagen2.split(',',1)
+    imagen2 = str.encode(imagen2[1])
+    with open("grafica2.png", "wb") as fh:
+        fh.write(base64.decodebytes(imagen2))
+    global dataP
+    p = dataP['p']
+    f = dataP['f']
+    ps = dataP['ps']
+    pms = dataP['pms']
+    pmd = dataP['pmd']
+    As = dataP['as']
+    Bs = dataP['bs']
+    pmda = dataP['pmda']
+    tmac = dataP['tmac']
+    ptmac = dataP['ptmac']
+    psel = dataP['psel']
+
+    print(f)
+    zipped = zip(p,f,ps,pms,pmd,As,Bs,pmda,tmac,ptmac,psel)
+    return PIBRenderPdf.render('pdfPIB.html',{'zipped':zipped})
+
 @login_required
 def configuraciones_pib(request,username):
     if request.method == 'GET':
@@ -445,6 +478,17 @@ def configuraciones_pib(request,username):
                             {'valor':aepsel,'Nombre':'Suavizacion exponencial'}
                         ]
                         minimo = min(errores, key=itemgetter("valor"))
+                        mejor = []
+                        if minimo["Nombre"] == "Promedio simple":
+                            mejor = ps
+                        elif minimo["Nombre"] == "Promedio movil simple":
+                            mejor = pms
+                        elif minimo["Nombre"] == "Promedio movil doble":
+                            mejor = pmd
+                        elif minimo["Nombre"] == "Promedio movil doble ajustado":
+                            mejor = pmda
+                        elif minimo["Nombre"] == "Suavizacion exponencial":
+                            mejor = psel
                         global dataP
                         dataP = {
                             'p': p,
@@ -458,7 +502,8 @@ def configuraciones_pib(request,username):
                             'tmac': tmac,
                             'ptmac': ptmac,
                             'psel': psel,
-                            'mejor': minimo
+                            'mejor': minimo,
+                            'mejor2':mejor
                         }
                         zipped = zip(p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,psel,epsel)
                         contexto = {

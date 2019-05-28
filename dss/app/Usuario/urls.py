@@ -9,6 +9,7 @@ from app.Usuario.views import configuraciones_pib
 from app.Usuario.views import calculos_pib
 from app.Usuario.views import config_dolar
 from app.Usuario.views import grafica_dolar
+from app.Usuario.views import renderPIB
 
 app_name='usuario'
 urlpatterns = [
@@ -19,5 +20,6 @@ urlpatterns = [
     path('<username>/graficas/',calculos_pib,name="graficas_pib"),
     path('<username>/variables/',variables_view,name="variables"),    
     path('<username>/configuracion_dolar/',config_dolar,name="config_dolar"),    
-    path('<username>/grafica_dolar/',grafica_dolar,name="grafica_dolar"),    
+    path('<username>/grafica_dolar/',grafica_dolar,name="grafica_dolar"),
+    path('pdf/pib/',renderPIB, name='pdfPib'),
 ]
