@@ -29,9 +29,9 @@
 	<nav class="navbar navbar-light nav">
 	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
 	  <form class="form-inline">
-	  	<a href="acerca.html" class="btnbar" >Acerca de</a>
-	  	<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
-	    <a href="" class="btnbar">Cerrar sesión</a>
+		<a href="acerca.html" class="btnbar" >Acerca de</a>
+		<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
+	 	<a href="{% url 'usuario:logout' %}" class="btnbar">Cerrar sesión</a>
 	  </form>
 	</nav>
 	
