@@ -2,6 +2,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+import math
+from operator import itemgetter
+
+# models
+from app.Usuario.models import PIB
+
+data = {}
 
 # Create your views here.
 def login_sistema(request):
@@ -25,7 +34,7 @@ def variables_view(request, username):
         if 'dolar' in request.POST:
             print('dolar')
         elif 'pib' in request.POST:
-            print('pib')
+            return redirect('usuario:pib', username=username)
 
 @login_required
 def calculos_dolar(request, username):
@@ -33,7 +42,244 @@ def calculos_dolar(request, username):
 
 @login_required
 def calculos_pib(request, username):
-    pass
+    if request.method == 'GET':
+        messages.success(request, 'ok')
+        global data
+        return render(request,'grafica.html', data)
+
+
+def truncate(number, digits) -> float:
+    stepper = pow(10.0, digits)
+    return math.trunc(stepper * number) / stepper
+
+@login_required
+def configuraciones_pib(request,username):
+    if request.method == 'GET':
+        return render(request, 'configuraciones.html')
+    elif request.method == 'POST':
+        if 'pib' in request.POST:
+            pib = PIB.objects.all()
+            n = len(pib) - 1 
+            k = int(request.POST['k'])
+            print(k)
+            j = int(request.POST['j'])
+            opcion = request.POST['pse']
+            print(opcion)
+            alpha = float(request.POST['alpha'])
+            m = int(request.POST['m'])
+            if k > 0 & k < n:
+                o = len(pib) - k - 1
+                if j > 0 & j < o:
+                    if 1==1:
+                        aps = 0
+                        apms = 0
+                        apmd = 0
+                        vi = 0
+                        vf = 0
+                        tmac = []
+                        a = 0
+                        b = 0
+                        p = []
+                        f = []
+                        ps= []
+                        eps= []
+                        pms = []
+                        epms=[]
+                        pmd = []
+                        epmd = []
+                        pmda=[]
+                        epmda=[]
+                        ptmac=[]
+                        As = []
+                        Bs = []
+                        epsel=[]
+                        psel=[]
+                        aeps = 0
+                        aepms = 0
+                        aepmd = 0
+                        aepmda = 0
+                        aepsel = 0
+                        ps.append(0)
+                        eps.append(0)
+                        for x in range (1,len(pib)):    
+                            aps = aps + pib[x-1].frecuencia
+                            res = float(aps)/x
+                            resta = abs(float(pib[x].frecuencia)-res)
+                            eps.append(truncate(resta,5))
+                            ps.append(truncate(res,5))
+                        for x in range(1, len(eps)-1):
+                            aeps = aeps + eps[x]
+                        aeps = aeps/(len(eps)-2)
+                        for x in range(k+1,len(pib)+1):
+                            y = x 
+                            for i in range(((y-k)-1),y-1):
+                                apms = apms + pib[i].frecuencia
+                            res = float(apms)/k
+                            resta = abs(float(pib[x-1].frecuencia)-res)
+                            pms.append(truncate(res,5))
+                            epms.append(truncate(resta,5))
+                            apms =0
+                        for x in range(0, len(epms)-1):
+                            aepms = aepms + epms[x]
+                        aepms = aepms/(len(epms)-1)
+                        for x in range(j+1,len(pms)+2):
+                            y = x 
+                            for i in range(((y-j)-1),y-1):
+                                apmd = apmd + pms[i]
+                            res = apmd/j
+                            pmd.append(truncate(res,5))
+                            apmd =0
+                        for x in range(1,len(pmd)):
+                            a = (2*float(pms[x+1])) - float(pmd[x-1])
+                            b = (2*((float(pms[x+1]) - float(pmd[x-1]))*-1    )) / (len(pib) - 1)
+                            As.append(truncate(a,5))
+                            Bs.append(truncate(b,5))
+                            res = a+(b*m)
+                            pmda.append(truncate(res,5))
+
+                        for x in range(k+j+1,len(pib)):
+                            resta = abs(float(pib[x-1].frecuencia) - pmd[x-k-j-1])
+                            epmd.append(truncate(resta,5))
+                        
+                        for x in range(0, len(epmd)):
+                            aepmd = aepmd + epmd[x]
+                        aepmd = aepmd/(len(epmd))
+                        
+                        for x in range(k+j+1,len(pib)):
+                            resta = abs(float(pib[x-1].frecuencia) - pmda[x-k-j-1])
+                            epmda.append(truncate(resta,5))
+                        
+                        for x in range(0, len(epmda)):
+                            aepmda = aepmda + epmda[x]
+                        aepmda = aepmda/(len(epmda))
+                        for x in range (1,len(pib)-1):
+                            vi = float(pib[x-1].frecuencia)
+                            vf = float(pib[x].frecuencia)
+                            tmac.append(truncate(((vf/vi) -1) * 100,5))
+                        for x in range(1, len(pib)-1):
+                            vf = float(pib[x].frecuencia)
+                            ptmac.append(truncate((float(tmac[x-1])/100)*vf+vf,5))
+                        for x in range(0,len(pib)):
+                            p.append(str(pib[x].periodo))
+                            f.append(float(pib[x].frecuencia))
+                        if opcion == "ps":
+                            for x in range(1,len(f)):
+                                res = float(ps[x])+(alpha*(float(f[x]) - float(ps[x])))
+                                psel.append(truncate(res,5))
+                            for x in range(2,len(f)-1):
+                                resta = abs(f[x] - psel[x-2])
+                                epsel.append(truncate(resta,5))
+                            
+                            for x in range(0, len(epsel)):
+                                aepsel = aepsel + epsel[x]
+                            aepsel = aepsel/(len(epsel))
+                            print(aepsel)
+
+                            for c in range(2):
+                                psel.insert(0,0)
+                                epsel.insert(0,0)
+                        if opcion == "pmd":
+                            for x in range(k+j,len(f)):
+                                psel.append(truncate(float(pmd[x-k-j])+(alpha*(float(f[x]) - float(pmd[x-k-j]))),5))
+                            for x in range(k+j+1,len(f)-1):
+                                resta = abs(f[x] - psel[x-k-j-1])
+                                epsel.append(truncate(resta,5))
+                            for x in range(0, len(epsel)):
+                                aepsel = aepsel + epsel[x]
+                            aepsel = aepsel/(len(epsel))
+                            print(aepsel)
+                            for c in range(j+k+1):
+                                psel.insert(0,0)
+                                epsel.insert(0,0)
+                        if opcion == "pms":
+                            for x in range(k,len(f)):
+                                psel.append(truncate(float(pms[x-k])+(alpha*(float(f[x]) - float(pms[x-k]))),5))
+                            for x in range(k+1,len(f)-1):
+                                print(psel[x-k-1])
+                                resta = abs(f[x] - psel[x-k-1])
+                                epsel.append(truncate(resta,5))
+                            for x in range(0, len(epsel)):
+                                aepsel = aepsel + epsel[x]
+                            aepsel = aepsel/(len(epsel))
+                            print(aepsel)
+                            for c in range(k+1):
+                                psel.insert(0,0)
+                                epsel.insert(0,0)
+                        if opcion == "pmda":
+                            for x in range(k+j,len(f)):
+
+                                psel.append(truncate(float(pmda[x-k-j])+(alpha*(float(f[x]) - float(pmda[x-k-j]))),5))
+                            for x in range(k+j+1,len(f)-1):
+                                resta = abs(f[x] - psel[x-k-j-1])
+                                epsel.append(truncate(resta,5))
+                            for x in range(0, len(epsel)):
+                                aepsel = aepsel + epsel[x]
+                            aepsel = aepsel/(len(epsel))
+                            print(aepsel)
+                            for c in range(j+k+1):
+                                psel.insert(0,0)
+                                epsel.insert(0,0)
+                        ## Llenado de 0's
+                        for c in range(0,k):
+                            pms.insert(0,0)
+                            epms.insert(0,0)
+                        for c in range(0,k):
+                            pmd.insert(0,0)
+                            epmd.insert(0,0)
+                        for c in range(0,j):
+                            pmd.insert(0,0)
+                            epmd.insert(0,0)
+                        for c in range(0,k):
+                            As.insert(0,0)
+                        for c in range(0,j):
+                            As.insert(0,0)
+                        for c in range(0,k):
+                            Bs.insert(0,0)
+                        for c in range(0,j):
+                            Bs.insert(0,0)
+                        for c in range(0,k):
+                            pmda.insert(0,0)
+                            epmda.insert(0,0)
+                        for c in range(0,j):
+                            pmda.insert(0,0)
+                            epmda.insert(0,0)
+                        tmac.insert(0,0)
+                        tmac.insert(103,0)
+                        epmda.insert(103,0)
+                        epsel.insert(103,0)
+                        epmd.insert(103,0)
+                        epms[102] = 0
+                        eps[102] = 0
+                        ptmac.insert(0,0)
+                        ptmac.insert(0,0)
+                        errores = [
+                            {'valor':aeps,'Nombre':'Promedio simple'},
+                            {'valor':aepms,'Nombre':'Promedio movil simple'},
+                            {'valor':aepmd,'Nombre':'Promedio  movil doble'},
+                            {'valor':aepmda,'Nombre':'Promedio movil doble ajustado'},
+                            {'valor':aepsel,'Nombre':'Suavizacion exponencial'}
+                        ]
+                        minimo = min(errores, key=itemgetter("valor"))
+                        global data
+                        data = {
+                            'p': p,
+                            'f': f,
+                            'ps': ps,
+                            'pms': pms,
+                            'pmd': pmd,
+                            'as': As,
+                            'bs': Bs,
+                            'pmda': pmda,
+                            'tmac': tmac,
+                            'ptmac': ptmac,
+                            'psel': psel,
+                            'mejor': minimo
+                        }
+                        zipped = zip(p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,psel,epsel)
+                        contexto = {
+                            'zipped':zipped
+                        }
+                return render(request,'tablas.html',contexto)
 
 @login_required
 def logout_view(request):

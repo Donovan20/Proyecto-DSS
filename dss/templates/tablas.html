@@ -12,14 +12,14 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
 <!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 	<link rel="stylesheet" href="{% static 'css/tabla.css' %}">
 <!--===============================================================================================-->
 
@@ -29,8 +29,9 @@
 	<nav class="navbar navbar-light nav">
 	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
 	  <form class="form-inline">
-	    <button class="btn " type="submit">Página principal</button>
-	    <button class="btn " type="submit">Cerrar sesión</button>
+	  	<a href="acerca.html" class="btnbar" >Acerca de</a>
+	  	<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
+	    <a href="" class="btnbar">Cerrar sesión</a>
 	  </form>
 	</nav>
 	
@@ -44,94 +45,50 @@
 				</div>
 
 				<table class="content-table">
-					<thead>
-				      <th scope="col">Período</th>
-				      <th scope="col">Frecuencia</th>
-				      <th scope="col">PS</th>
-				      <th scope="col">PMS</th>
-				      <th scope="col">PMD</th>
-				      <th scope="col">A</th>
-				      <th scope="col">B</th>
-				      <th scope="col">PMDA</th>
-				      <th scope="col">TMAC</th>
-				      <th scope="col">DTMAC</th>
-					</tr>
-				  </thead>
-				  <tbody>
-				    <tr>
-				      <td>2010</td>
-				      <td>25</td>
-				      <td>88</td>
-				      <td>23</td>
-				      <td>55</td>
-				      <td>11</td>
-				      <td>22</td>
-				      <td>33</td>
-				      <td>22</td>
-				      <td>33</td>
-				    </tr>
-				    <tr>
-				      <td>2010</td>
-				      <td>25</td>
-				      <td>88</td>
-				      <td>23</td>
-				      <td>55</td>
-				      <td>11</td>
-				      <td>22</td>
-				      <td>33</td>
-				      <td>22</td>
-				      <td>33</td>
-				    </tr>
-				    <tr>
-				      <td>2010</td>
-				      <td>25</td>
-				      <td>88</td>
-				      <td>23</td>
-				      <td>55</td>
-				      <td>11</td>
-				      <td>22</td>
-				      <td>33</td>
-				      <td>22</td>
-				      <td>33</td>
-				    </tr>
-				    <tr>
-				      <td>2010</td>
-				      <td>25</td>
-				      <td>88</td>
-				      <td>23</td>
-				      <td>55</td>
-				      <td>11</td>
-				      <td>22</td>
-				      <td>33</td>
-				      <td>22</td>
-				      <td>33</td>
-				    </tr>
-				    <tr>
-				      <td>2010</td>
-				      <td>25</td>
-				      <td>88</td>
-				      <td>23</td>
-				      <td>55</td>
-				      <td>11</td>
-				      <td>22</td>
-				      <td>33</td>
-				      <td>22</td>
-				      <td>33</td>
-				    </tr>
-				    <tr>
-				      <td>2010</td>
-				      <td>25</td>
-				      <td>88</td>
-				      <td>23</td>
-				      <td>55</td>
-				      <td>11</td>
-				      <td>22</td>
-				      <td>33</td>
-				      <td>22</td>
-				      <td>33</td>
-				    </tr>
-				  </tbody>
+						<thead>
+								<th scope="col">Período</th>
+								<th scope="col">Frecuencia</th>
+								<th scope="col">PS</th>
+								<th scope="col">EABS PS</th>
+								<th scope="col">PMS</th>
+								<th scope="col">EABS PMS</th>
+								<th scope="col">PMD</th>
+								<th scope="col">EABS PMD</th>
+								<th scope="col">A</th>
+								<th scope="col">B</th>
+								<th scope="col">PMDA</th>
+								<th scope="col">EABS PMDA</th>
+								<th scope="col">TMAC</th>
+								<th scope="col">PTMAC</th>
+								<th scope="col">PSEL</th>
+								<th scope="col">EABS PSEL</th>
+						</tr>
+						</thead>
+						<tbody>
+							{% for p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,psel,epsel in zipped %}
+							<tr>
+								<td>{{p}}</td>
+								<td>{{f}}</td>
+								<td>{{ps}}</td>
+								<td>{{eps}}</td>
+								<td>{{pms}}</td>
+								<td>{{epms}}</td>
+								<td>{{pmd}}</td>
+								<td>{{epmd}}</td>
+								<td>{{As}}</td>
+								<td>{{Bs}}</td>
+								<td>{{pmda}}</td>
+								<td>{{epmda}}</td>
+								<td>{{tmac}}</td>
+								<td>{{ptmac}}</td>
+								<td>{{psel}}</td>
+								<td>{{epsel}}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
 				</table>
+
+				<a href="{% url 'usuario:graficas_pib' request.user.username %}" class="vergrafica">Ver gráfica</a>
 
 
 			</div>
