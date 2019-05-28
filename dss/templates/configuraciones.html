@@ -29,7 +29,7 @@
 	  <form class="form-inline">
 	  	<a href="acerca.html" class="btnbar" >Acerca de</a>
 	  	<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
-	    <a href="" class="btnbar">Cerrar sesión</a>
+	    <a href="{% url 'usuario:logout' %}" class="btnbar">Cerrar sesión</a>
 	  </form>
 	</nav>
 	
@@ -44,30 +44,54 @@
 					</span>
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="number"  placeholder="k" name="k">
+						<input class="input" type="number"  value="{{value.k}}"  placeholder="k" name="k">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
 							
 						</span>
 					</div>
+					{% if errores.kmenor0 %}
+							<span style="color: red">{{ errores.kmenor0 }}</span>
+							<br>
+					{% endif %}
+					{% if errores.kmenorn %}
+							<span style="color: red">{{ errores.kmenorn }}</span>
+							<br>
+					{% endif %}
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="number" placeholder="j" name="j">
+						<input class="input" type="number" value="{{value.j}}" placeholder="j" name="j">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
 						</span>
 					</div>
+					{% if errores.jmenor0 %}
+								<span style="color: red">{{ errores.jmenor0 }}</span>
+								<br>
+						{% endif %}
+						{% if errores.jmenornk %}
+								<span style="color: red">{{ errores.jmenornk }}</span>
+								<br>
+						{% endif %}
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="text"  placeholder="α" name="alpha">
+						<input class="input" type="text" value="{{value.alpha}}"  placeholder="α" name="alpha">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
 							
 						</span>
 					</div>
+					{% if errores.alfamenor0 %}
+							<span style="color: red">{{ errores.alfamenor0 }}</span>
+							<br>
+					{% endif %}
+					{% if errores.alfamayor1 %}
+							<span style="color: red">{{ errores.alfamayor1 }}</span>
+							<br>
+					{% endif %}
 
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
@@ -89,13 +113,17 @@
 					</div>
 
 					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
-						<input class="input" type="number"  placeholder="m" name="m">
+						<input class="input" type="number" value="{{value.m}}"  placeholder="m" name="m">
 						<span class="focus-input"></span>
 						<span class="symbol-input">
 							<i class="fas fa-cog" aria-hidden="true"></i>
 							
 						</span>
 					</div>
+					{% if errores.mmenor0 %}
+							<span style="color: red">{{ errores.mmenor0 }}</span>
+							<br>
+					{% endif %}
 	
 					<div class="container-login-form-btn">
 						<button class="login-form-btn" name="pib">

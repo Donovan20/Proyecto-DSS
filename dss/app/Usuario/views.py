@@ -75,7 +75,8 @@ def config_dolar(request, username):
             error['alfamenor0'] = 'Alfa debe ser mayor o igual a 0'
         if float(alfa) > 1:
             error['alfamayor1'] = 'Alfa debe ser menor o igual a 1'
-        
+        if int(m) < 0:
+            error['mmenor0'] = 'M debe ser mayor o igual a 0'
         if len(error) > 0:
             values = {
                 'k': k,
@@ -87,7 +88,7 @@ def config_dolar(request, username):
             return render(request, 'configuracionesDolar.html', {'errores': error, 'value': values})
         else:
             global dataD
-
+            dataD = []
             values = {
                 'k': k,
                 'j': j,
@@ -105,17 +106,21 @@ def config_dolar(request, username):
             acumuladorPS = 0
             contador = 1
             ps = []
+            eapsd = [] # errores absolutos
             k = int(k)
             j = int(j)
             m = int(m)
-            for i in range(1, int(n)+1):
+            for i in range(1, int(n)):
                 acumuladorPS = acumuladorPS + (dolar[i - 1].frecuencia)
                 ps.append(truncate((acumuladorPS / contador),5))
+                resta = abs(float(dolar[i].frecuencia)-float((acumuladorPS / contador)))
+                eapsd.append(truncate(resta, 5))
                 contador += 1
 
             auxiliar = 0
             acumuladorPSM = 0
             pms = []
+            eapms = [] # errores absolutos
             for x in range(int(k)+1, int(n)+1):
                 auxiliar = x
                 for i in range(((auxiliar-int(k))-1), auxiliar-1):
@@ -126,6 +131,7 @@ def config_dolar(request, username):
             auxiliarPMD = 0
             acumuladorPMD = 0
             pmd = []
+            eapmd = [] # errores absolutos
             for x in range(int(j)+1, len(pms)+2):
                 auxiliarPMD = x
                 for i in range(((auxiliarPMD-int(j))-1), auxiliarPMD-1):
@@ -146,6 +152,7 @@ def config_dolar(request, username):
                 auxiliarBs += 1
 
             pmda = []
+            eapmda = [] # errores absolutos
             for x in range(1, len(pmd)):
                 pmda.append(truncate((As[x-1] + Bs[x-1] * int(m)), 5))
 
@@ -154,33 +161,116 @@ def config_dolar(request, username):
                 tmac.append(truncate((((frecuencias[x]/frecuencias[x-1])-1)*100),5))
             
             ptmac = []
+            eaptmac = []# errores absolutos
             for x in range(1, len(frecuencias)):
                 ptmac.append(truncate((float(frecuencias[x])+(float(frecuencias[x])*(tmac[x-1]/100))),5))
             
             psel = []
+            eapsel = [] # errores absolutos
             if opcion == "ps":
-                for x in range(1,len(frecuencias)):
+                for x in range(1,len(frecuencias)-1):
                     res = float(ps[x])+(float(alfa)*(float(frecuencias[x]) - float(ps[x])))
                     psel.append(truncate(res,5))
-
+                indicepse = len(frecuencias) - len(psel)
+                for x in range(0, len(psel)):
+                    resta = abs(frecuencias[indicepse]-psel[x])
+                    eapsel.append(truncate(resta,5))
+                    indicepse +=  1;
                 for c in range(2):
                     psel.insert(0,0)
                     
             if opcion == "pmd":
                 for x in range(k+j,len(frecuencias)):
                     psel.append(truncate(float(pmd[x-k-j])+(float(alfa)*(float(frecuencias[x]) - float(pmd[x-k-j]))),5))
+                indicepse = len(frecuencias) - len(psel) + 1
+                for x in range(0, len(psel) - 1):
+                    resta = abs(frecuencias[indicepse]-psel[x])
+                    eapsel.append(truncate(resta,5))
+                    indicepse +=  1
                 for c in range(j+k+1):
                     psel.insert(0,0)
             if opcion == "pms":
                 for x in range(k,len(frecuencias)):
                     psel.append(truncate(float(pms[x-k])+(float(alfa)*(float(frecuencias[x]) - float(pms[x-k]))),5))
+                indicepse = len(frecuencias) - len(psel) + 1
+                for x in range(0, len(psel) - 1):
+                    resta = abs(frecuencias[indicepse]-psel[x])
+                    eapsel.append(truncate(resta,5))
+                    indicepse +=  1
                 for c in range(k+1):
                     psel.insert(0,0)
             if opcion == "pmda":
                 for x in range(k+j,len(frecuencias)):
                     psel.append(truncate(float(pmda[x-k-j])+(float(alfa)*(float(frecuencias[x]) - float(pmda[x-k-j]))),5))
+                indicepse = len(frecuencias) - len(psel) + 1
+                for x in range(0, len(psel) - 1):
+                    resta = abs(frecuencias[indicepse]-psel[x])
+                    eapsel.append(truncate(resta,5))
+                    indicepse +=  1
                 for c in range(j+k+1):
                     psel.insert(0,0)
+
+            indicepms = len(frecuencias) - len(pms)
+            for x in range(0, len(pms)):
+                resta = abs(frecuencias[indicepms]-pms[x])
+                eapms.append(truncate(resta,5))
+                indicepms +=  1;
+
+            indicepmd = len(frecuencias) - len(pmd) + 1
+            for x in range(0, len(pmd)-1):
+                resta = abs(frecuencias[indicepmd]-pmd[x])
+                eapmd.append(truncate(resta,5))
+                indicepmd +=  1;
+            
+            indicepmda = len(frecuencias) - len(pmda)
+            for x in range(0, len(pmda)):
+                resta = abs(frecuencias[indicepmda]-pmda[x])
+                eapmda.append(truncate(resta,5))
+                indicepmda +=  1;
+
+            indiceptmac = len(frecuencias) - len(ptmac) + 1
+            for x in range(0, len(ptmac) - 1):
+                resta = abs(frecuencias[indiceptmac]-ptmac[x])
+                eaptmac.append(truncate(resta,5))
+                indiceptmac +=  1;
+
+            # Errores medios
+            constadorerrps = 0
+            for i in range(0, len(eapsd)):
+                constadorerrps += eapsd[i]
+
+            error_medio_ps = constadorerrps / len(eapsd)
+
+            constadorerrpms = 0
+            for i in range(0, len(eapms)):
+                constadorerrpms += eapms[i]
+
+            error_medio_pms = constadorerrpms / len(eapms)
+
+            constadorerrpmd = 0
+            for i in range(0, len(eapmd)):
+                constadorerrpmd += eapmd[i]
+
+            error_medio_pmd = constadorerrps / len(eapmd)
+
+            constadorerrpmda = 0
+            for i in range(0, len(eapmda)):
+                constadorerrpmda += eapmda[i]
+
+            error_medio_pmda = constadorerrpmda / len(eapmda)
+
+            constadorerrptmac = 0
+            for i in range(0, len(eaptmac)):
+                constadorerrptmac += eaptmac[i]
+
+            error_medio_ptmac = constadorerrptmac / len(eaptmac)
+
+            constadorerrpse = 0
+            for i in range(0, len(eapsel)):
+                constadorerrpse += eapsel[i]
+
+            error_medio_psel = constadorerrpse / len(eapsel)
+
             # Insertar 0's al principio dependiendo de k y j
             for c in range(1):
                 ps.insert(0,0)
@@ -208,10 +298,6 @@ def config_dolar(request, username):
                 ptmac.insert(0,0)
 
             zipped = zip(periodos, frecuencias, ps, pms, pmd, As, Bs, pmda, tmac, ptmac, psel)
-            contexto = {
-                'zipped': zipped,
-                'values': values
-            }
             dataD = {
                     'p': periodos,
                     'f': frecuencias,
@@ -224,6 +310,10 @@ def config_dolar(request, username):
                     'tmac': tmac,
                     'ptmac': ptmac,
                     'psel': psel,
+            }
+            contexto = {
+                'zipped': zipped,
+                'values': values
             }
             return render(request, 'tablasDolar.html', contexto)
 
@@ -276,240 +366,267 @@ def configuraciones_pib(request,username):
     if request.method == 'GET':
         return render(request, 'configuraciones.html')
     elif request.method == 'POST':
+        
         if 'pib' in request.POST:
             pib = PIB.objects.all()
             n = len(pib) - 1 
             k = int(request.POST['k'])
-            print(k)
             j = int(request.POST['j'])
             opcion = request.POST['pse']
-            print(opcion)
             alpha = float(request.POST['alpha'])
             m = int(request.POST['m'])
-            if k > 0 & k < n:
-                o = len(pib) - k - 1
-                if j > 0 & j < o:
-                    if 1==1:
-                        aps = 0
-                        apms = 0
-                        apmd = 0
-                        vi = 0
-                        vf = 0
-                        tmac = []
-                        a = 0
-                        b = 0
-                        p = []
-                        f = []
-                        ps= []
-                        eps= []
-                        pms = []
-                        epms=[]
-                        pmd = []
-                        epmd = []
-                        pmda=[]
-                        epmda=[]
-                        ptmac=[]
-                        As = []
-                        Bs = []
-                        epsel=[]
-                        psel=[]
-                        aeps = 0
-                        aepms = 0
-                        aepmd = 0
-                        aepmda = 0
-                        aepsel = 0
-                        ps.append(0)
-                        eps.append(0)
-                        for x in range (1,len(pib)):    
-                            aps = aps + pib[x-1].frecuencia
-                            res = float(aps)/x
-                            resta = abs(float(pib[x].frecuencia)-res)
-                            eps.append(truncate(resta,5))
-                            ps.append(truncate(res,5))
-                        for x in range(1, len(eps)-1):
-                            aeps = aeps + eps[x]
-                        aeps = aeps/(len(eps)-2)
-                        for x in range(k+1,len(pib)+1):
-                            y = x 
-                            for i in range(((y-k)-1),y-1):
-                                apms = apms + pib[i].frecuencia
-                            res = float(apms)/k
-                            resta = abs(float(pib[x-1].frecuencia)-res)
-                            pms.append(truncate(res,5))
-                            epms.append(truncate(resta,5))
-                            apms =0
-                        for x in range(0, len(epms)-1):
-                            aepms = aepms + epms[x]
-                        aepms = aepms/(len(epms)-1)
-                        for x in range(j+1,len(pms)+2):
-                            y = x 
-                            for i in range(((y-j)-1),y-1):
-                                apmd = apmd + pms[i]
-                            res = apmd/j
-                            pmd.append(truncate(res,5))
-                            apmd =0
-                        for x in range(1,len(pmd)):
-                            a = (2*float(pms[x+1])) - float(pmd[x-1])
-                            b = (2*((float(pms[x+1]) - float(pmd[x-1]))*-1    )) / (len(pib) - 1)
-                            As.append(truncate(a,5))
-                            Bs.append(truncate(b,5))
-                            res = a+(b*m)
-                            pmda.append(truncate(res,5))
+            error = {}
+            if k < 0:
+                error['kmenor0'] = 'K debe ser mayor a 0'
+            if k >= n:
+                error['kmenorn'] = 'K debe ser menor a N - 1'
+            if j < 0:
+                error['jmenor0'] = 'J debe ser mayor a 0'
+            if j >= (int(n) - k - 1):
+                error['jmenornk'] = 'J debe ser menor a (n - k - 1)'
+            if float(alpha) < 0:
+                error['alfamenor0'] = 'Alfa debe ser mayor o igual a 0'
+            if float(alpha) > 1:
+                error['alfamayor1'] = 'Alfa debe ser menor o igual a 1'
+            if m < 0:
+                error['mmenor0'] = 'M debe ser mayor o igual a 0'
+            if len(error) > 0:
+                values = {
+                    'k': k,
+                    'j': j,
+                    'alpha': alpha,
+                    'm': m
+                }
+                return render(request, 'configuraciones.html', {'errores': error, 'value': values})
+            else:
+                if k > 0 & k < n:
+                    o = len(pib) - k - 1
+                    if j > 0 & j < o:
+                        if 1==1:
+                            aps = 0
+                            apms = 0
+                            apmd = 0
+                            vi = 0
+                            vf = 0
+                            tmac = []
+                            a = 0
+                            b = 0
+                            p = []
+                            f = []
+                            ps= []
+                            eps= []
+                            pms = []
+                            epms=[]
+                            pmd = []
+                            epmd = []
+                            pmda=[]
+                            epmda=[]
+                            ptmac=[]
+                            As = []
+                            Bs = []
+                            epsel=[]
+                            psel=[]
+                            aeps = 0
+                            aepms = 0
+                            aepmd = 0
+                            aepmda = 0
+                            aepsel = 0
+                            ps.append(0)
+                            eps.append(0)
+                            for x in range (1,len(pib)):    
+                                aps = aps + pib[x-1].frecuencia
+                                res = float(aps)/x
+                                resta = abs(float(pib[x].frecuencia)-res)
+                                eps.append(truncate(resta,5))
+                                ps.append(truncate(res,5))
+                            for x in range(1, len(eps)-1):
+                                aeps = aeps + eps[x]
+                            aeps = aeps/(len(eps)-2)
+                            for x in range(k+1,len(pib)+1):
+                                y = x 
+                                for i in range(((y-k)-1),y-1):
+                                    apms = apms + pib[i].frecuencia
+                                res = float(apms)/k
+                                resta = abs(float(pib[x-1].frecuencia)-res)
+                                pms.append(truncate(res,5))
+                                epms.append(truncate(resta,5))
+                                apms =0
+                            for x in range(0, len(epms)-1):
+                                aepms = aepms + epms[x]
+                            aepms = aepms/(len(epms)-1)
+                            for x in range(j+1,len(pms)+2):
+                                y = x 
+                                for i in range(((y-j)-1),y-1):
+                                    apmd = apmd + pms[i]
+                                res = apmd/j
+                                pmd.append(truncate(res,5))
+                                apmd =0
+                            for x in range(1,len(pmd)):
+                                a = (2*float(pms[x+1])) - float(pmd[x-1])
+                                b = (2*((float(pms[x+1]) - float(pmd[x-1]))*-1    )) / (len(pib) - 1)
+                                As.append(truncate(a,5))
+                                Bs.append(truncate(b,5))
+                                res = a+(b*m)
+                                pmda.append(truncate(res,5))
 
-                        for x in range(k+j+1,len(pib)):
-                            resta = abs(float(pib[x-1].frecuencia) - pmd[x-k-j-1])
-                            epmd.append(truncate(resta,5))
-                        
-                        for x in range(0, len(epmd)):
-                            aepmd = aepmd + epmd[x]
-                        aepmd = aepmd/(len(epmd))
-                        
-                        for x in range(k+j+1,len(pib)):
-                            resta = abs(float(pib[x-1].frecuencia) - pmda[x-k-j-1])
-                            epmda.append(truncate(resta,5))
-                        
-                        for x in range(0, len(epmda)):
-                            aepmda = aepmda + epmda[x]
-                        aepmda = aepmda/(len(epmda))
-                        for x in range (1,len(pib)-1):
-                            vi = float(pib[x-1].frecuencia)
-                            vf = float(pib[x].frecuencia)
-                            tmac.append(truncate(((vf/vi) -1) * 100,5))
-                        for x in range(1, len(pib)-1):
-                            vf = float(pib[x].frecuencia)
-                            ptmac.append(truncate((float(tmac[x-1])/100)*vf+vf,5))
-                        for x in range(0,len(pib)):
-                            p.append(str(pib[x].periodo))
-                            f.append(float(pib[x].frecuencia))
-                        if opcion == "ps":
-                            for x in range(1,len(f)):
-                                res = float(ps[x])+(alpha*(float(f[x]) - float(ps[x])))
-                                psel.append(truncate(res,5))
-                            for x in range(2,len(f)-1):
-                                resta = abs(f[x] - psel[x-2])
-                                epsel.append(truncate(resta,5))
+                            for x in range(k+j+1,len(pib)):
+                                resta = abs(float(pib[x-1].frecuencia) - pmd[x-k-j-1])
+                                epmd.append(truncate(resta,5))
                             
-                            for x in range(0, len(epsel)):
-                                aepsel = aepsel + epsel[x]
-                            aepsel = aepsel/(len(epsel))
-                            print(aepsel)
+                            for x in range(0, len(epmd)):
+                                aepmd = aepmd + epmd[x]
+                            aepmd = aepmd/(len(epmd))
+                            
+                            for x in range(k+j+1,len(pib)):
+                                resta = abs(float(pib[x-1].frecuencia) - pmda[x-k-j-1])
+                                epmda.append(truncate(resta,5))
+                            
+                            for x in range(0, len(epmda)):
+                                aepmda = aepmda + epmda[x]
+                            aepmda = aepmda/(len(epmda))
+                            for x in range (1,len(pib)-1):
+                                vi = float(pib[x-1].frecuencia)
+                                vf = float(pib[x].frecuencia)
+                                tmac.append(truncate(((vf/vi) -1) * 100,5))
+                            for x in range(1, len(pib)-1):
+                                vf = float(pib[x].frecuencia)
+                                ptmac.append(truncate((float(tmac[x-1])/100)*vf+vf,5))
+                            for x in range(0,len(pib)):
+                                p.append(str(pib[x].periodo))
+                                f.append(float(pib[x].frecuencia))
+                            if opcion == "ps":
+                                for x in range(1,len(f)):
+                                    res = float(ps[x])+(alpha*(float(f[x]) - float(ps[x])))
+                                    psel.append(truncate(res,5))
+                                for x in range(2,len(f)-1):
+                                    resta = abs(f[x] - psel[x-2])
+                                    epsel.append(truncate(resta,5))
+                                
+                                for x in range(0, len(epsel)):
+                                    aepsel = aepsel + epsel[x]
+                                aepsel = aepsel/(len(epsel))
+                                print(aepsel)
 
-                            for c in range(2):
-                                psel.insert(0,0)
-                                epsel.insert(0,0)
-                        if opcion == "pmd":
-                            for x in range(k+j,len(f)):
-                                psel.append(truncate(float(pmd[x-k-j])+(alpha*(float(f[x]) - float(pmd[x-k-j]))),5))
-                            for x in range(k+j+1,len(f)-1):
-                                resta = abs(f[x] - psel[x-k-j-1])
-                                epsel.append(truncate(resta,5))
-                            for x in range(0, len(epsel)):
-                                aepsel = aepsel + epsel[x]
-                            aepsel = aepsel/(len(epsel))
-                            print(aepsel)
-                            for c in range(j+k+1):
-                                psel.insert(0,0)
-                                epsel.insert(0,0)
-                        if opcion == "pms":
-                            for x in range(k,len(f)):
-                                psel.append(truncate(float(pms[x-k])+(alpha*(float(f[x]) - float(pms[x-k]))),5))
-                            for x in range(k+1,len(f)-1):
-                                print(psel[x-k-1])
-                                resta = abs(f[x] - psel[x-k-1])
-                                epsel.append(truncate(resta,5))
-                            for x in range(0, len(epsel)):
-                                aepsel = aepsel + epsel[x]
-                            aepsel = aepsel/(len(epsel))
-                            print(aepsel)
-                            for c in range(k+1):
-                                psel.insert(0,0)
-                                epsel.insert(0,0)
-                        if opcion == "pmda":
-                            for x in range(k+j,len(f)):
-                                psel.append(truncate(float(pmda[x-k-j])+(alpha*(float(f[x]) - float(pmda[x-k-j]))),5))
-                            for x in range(k+j+1,len(f)-1):
-                                resta = abs(f[x] - psel[x-k-j-1])
-                                epsel.append(truncate(resta,5))
-                            for x in range(0, len(epsel)):
-                                aepsel = aepsel + epsel[x]
-                            aepsel = aepsel/(len(epsel))
-                            print(aepsel)
-                            for c in range(j+k+1):
-                                psel.insert(0,0)
-                                epsel.insert(0,0)
-                        ## Llenado de 0's
-                        for c in range(0,k):
-                            pms.insert(0,0)
-                            epms.insert(0,0)
-                        for c in range(0,k):
-                            pmd.insert(0,0)
-                            epmd.insert(0,0)
-                        for c in range(0,j):
-                            pmd.insert(0,0)
-                            epmd.insert(0,0)
-                        for c in range(0,k):
-                            As.insert(0,0)
-                        for c in range(0,j):
-                            As.insert(0,0)
-                        for c in range(0,k):
-                            Bs.insert(0,0)
-                        for c in range(0,j):
-                            Bs.insert(0,0)
-                        for c in range(0,k):
-                            pmda.insert(0,0)
-                            epmda.insert(0,0)
-                        for c in range(0,j):
-                            pmda.insert(0,0)
-                            epmda.insert(0,0)
-                        tmac.insert(0,0)
-                        tmac.insert(103,0)
-                        epmda.insert(103,0)
-                        epsel.insert(103,0)
-                        epmd.insert(103,0)
-                        epms[102] = 0
-                        eps[102] = 0
-                        ptmac.insert(0,0)
-                        ptmac.insert(0,0)
-                        errores = [
-                            {'valor':aeps,'Nombre':'Promedio simple'},
-                            {'valor':aepms,'Nombre':'Promedio movil simple'},
-                            {'valor':aepmd,'Nombre':'Promedio  movil doble'},
-                            {'valor':aepmda,'Nombre':'Promedio movil doble ajustado'},
-                            {'valor':aepsel,'Nombre':'Suavizacion exponencial'}
-                        ]
-                        minimo = min(errores, key=itemgetter("valor"))
-                        mejor = []
-                        if minimo["Nombre"] == "Promedio simple":
-                            mejor = ps
-                        elif minimo["Nombre"] == "Promedio movil simple":
-                            mejor = pms
-                        elif minimo["Nombre"] == "Promedio movil doble":
-                            mejor = pmd
-                        elif minimo["Nombre"] == "Promedio movil doble ajustado":
-                            mejor = pmda
-                        elif minimo["Nombre"] == "Suavizacion exponencial":
-                            mejor = psel
-                        global dataP
-                        dataP = {
-                            'p': p,
-                            'f': f,
-                            'ps': ps,
-                            'pms': pms,
-                            'pmd': pmd,
-                            'as': As,
-                            'bs': Bs,
-                            'pmda': pmda,
-                            'tmac': tmac,
-                            'ptmac': ptmac,
-                            'psel': psel,
-                            'mejor': minimo,
-                            'mejor2':mejor
-                        }
-                        zipped = zip(p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,psel,epsel)
-                        contexto = {
-                            'zipped':zipped
-                        }
-                return render(request,'tablas.html',contexto)
+                                for c in range(2):
+                                    psel.insert(0,0)
+                                    epsel.insert(0,0)
+                            if opcion == "pmd":
+                                for x in range(k+j,len(f)):
+                                    psel.append(truncate(float(pmd[x-k-j])+(alpha*(float(f[x]) - float(pmd[x-k-j]))),5))
+                                for x in range(k+j+1,len(f)-1):
+                                    resta = abs(f[x] - psel[x-k-j-1])
+                                    epsel.append(truncate(resta,5))
+                                for x in range(0, len(epsel)):
+                                    aepsel = aepsel + epsel[x]
+                                aepsel = aepsel/(len(epsel))
+                                print(aepsel)
+                                for c in range(j+k+1):
+                                    psel.insert(0,0)
+                                    epsel.insert(0,0)
+                            if opcion == "pms":
+                                for x in range(k,len(f)):
+                                    psel.append(truncate(float(pms[x-k])+(alpha*(float(f[x]) - float(pms[x-k]))),5))
+                                for x in range(k+1,len(f)-1):
+                                    print(psel[x-k-1])
+                                    resta = abs(f[x] - psel[x-k-1])
+                                    epsel.append(truncate(resta,5))
+                                for x in range(0, len(epsel)):
+                                    aepsel = aepsel + epsel[x]
+                                aepsel = aepsel/(len(epsel))
+                                print(aepsel)
+                                for c in range(k+1):
+                                    psel.insert(0,0)
+                                    epsel.insert(0,0)
+                            if opcion == "pmda":
+                                for x in range(k+j,len(f)):
+                                    psel.append(truncate(float(pmda[x-k-j])+(alpha*(float(f[x]) - float(pmda[x-k-j]))),5))
+                                for x in range(k+j+1,len(f)-1):
+                                    resta = abs(f[x] - psel[x-k-j-1])
+                                    epsel.append(truncate(resta,5))
+                                for x in range(0, len(epsel)):
+                                    aepsel = aepsel + epsel[x]
+                                aepsel = aepsel/(len(epsel))
+                                print(aepsel)
+                                for c in range(j+k+1):
+                                    psel.insert(0,0)
+                                    epsel.insert(0,0)
+                            ## Llenado de 0's
+                            for c in range(0,k):
+                                pms.insert(0,0)
+                                epms.insert(0,0)
+                            for c in range(0,k):
+                                pmd.insert(0,0)
+                                epmd.insert(0,0)
+                            for c in range(0,j):
+                                pmd.insert(0,0)
+                                epmd.insert(0,0)
+                            for c in range(0,k):
+                                As.insert(0,0)
+                            for c in range(0,j):
+                                As.insert(0,0)
+                            for c in range(0,k):
+                                Bs.insert(0,0)
+                            for c in range(0,j):
+                                Bs.insert(0,0)
+                            for c in range(0,k):
+                                pmda.insert(0,0)
+                                epmda.insert(0,0)
+                            for c in range(0,j):
+                                pmda.insert(0,0)
+                                epmda.insert(0,0)
+                            tmac.insert(0,0)
+                            tmac.insert(103,0)
+                            epmda.insert(103,0)
+                            epsel.insert(103,0)
+                            epmd.insert(103,0)
+                            epms[102] = 0
+                            eps[102] = 0
+                            ptmac.insert(0,0)
+                            ptmac.insert(0,0)
+                            errores = [
+                                {'valor':aeps,'Nombre':'Promedio simple'},
+                                {'valor':aepms,'Nombre':'Promedio movil simple'},
+                                {'valor':aepmd,'Nombre':'Promedio  movil doble'},
+                                {'valor':aepmda,'Nombre':'Promedio movil doble ajustado'},
+                                {'valor':aepsel,'Nombre':'Suavizacion exponencial'}
+                            ]
+                            minimo = min(errores, key=itemgetter("valor"))
+                            mejor = []
+                            if minimo["Nombre"] == "Promedio simple":
+                                mejor = ps
+                            elif minimo["Nombre"] == "Promedio movil simple":
+                                mejor = pms
+                            elif minimo["Nombre"] == "Promedio movil doble":
+                                mejor = pmd
+                            elif minimo["Nombre"] == "Promedio movil doble ajustado":
+                                mejor = pmda
+                            elif minimo["Nombre"] == "Suavizacion exponencial":
+                                mejor = psel
+                            global dataP
+                            dataP = {
+                                'p': p,
+                                'f': f,
+                                'ps': ps,
+                                'pms': pms,
+                                'pmd': pmd,
+                                'as': As,
+                                'bs': Bs,
+                                'pmda': pmda,
+                                'tmac': tmac,
+                                'ptmac': ptmac,
+                                'psel': psel,
+                                'mejor': minimo,
+                                'mejor2':mejor
+                            }
+                            zipped = zip(p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,psel,epsel)
+                            contexto = {
+                                'zipped':zipped
+                            }
+                    return render(request,'tablas.html',contexto)
+
+# @login_required
+# def acercade(request):
+#     return render(request, '')
 
 @login_required
 def logout_view(request):
