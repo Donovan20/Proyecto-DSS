@@ -393,8 +393,9 @@ def renderDolar(request):
     tmac = dataD['tmac']
     ptmac = dataD['ptmac']
     psel = dataD['psel']
+    mejor = dataD['mejor']
     zipped = zip(p,f,ps,pms,pmd,As,Bs,pmda,tmac,ptmac,psel)
-    return DolarRenderPdf.render('pdfDolar.html',{'zipped':zipped})
+    return DolarRenderPdf.render('pdfDolar.html',{'zipped':zipped,'mejor':mejor})
 
 
 def renderPIB(request):
@@ -421,9 +422,9 @@ def renderPIB(request):
     tmac = dataP['tmac']
     ptmac = dataP['ptmac']
     psel = dataP['psel']
-
+    mejor = dataP['mejor']
     zipped = zip(p,f,ps,pms,pmd,As,Bs,pmda,tmac,ptmac,psel)
-    return PIBRenderPdf.render('pdfPIB.html',{'zipped':zipped})
+    return PIBRenderPdf.render('pdfPIB.html',{'zipped':zipped, 'mejor':mejor})
 
 @login_required
 def configuraciones_pib(request,username):
