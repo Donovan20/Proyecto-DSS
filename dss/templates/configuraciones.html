@@ -1,0 +1,141 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Configuraciones</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+<link rel="icon" type="image/png" href="{% static 'images/icons/icono.ico' %}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<!--===============================================================================================-->
+</head>
+<body>
+
+	<nav class="navbar navbar-light nav">
+	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
+	  <form class="form-inline">
+	  	<a href="{% url 'usuario:acerca' %}" class="btnbar" >Acerca de</a>
+	  	<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
+	    <a href="{% url 'usuario:logout' %}" class="btnbar">Cerrar sesión</a>
+	  </form>
+	</nav>
+	
+	<div class="limiter">
+		<div class="container-login">
+			<div class="wrap-login">
+
+				<form class="login-form validate-form centrado" style="margin-top: -100px !important; margin-bottom: 50px;" method="POST">
+					{% csrf_token %}
+					<span class="login-form-title" style="font-family: Montserrat-Bold; color: #4E5B6D;">
+						Ingrese las configuraciones
+					</span>
+
+					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
+						<input class="input" type="number"  value="{{value.k}}"  placeholder="k" name="k">
+						<span class="focus-input"></span>
+						<span class="symbol-input">
+							<i class="fas fa-cog" aria-hidden="true"></i>
+							
+						</span>
+					</div>
+					{% if errores.kmenor0 %}
+							<span style="color: red">{{ errores.kmenor0 }}</span>
+							<br>
+					{% endif %}
+					{% if errores.kmenorn %}
+							<span style="color: red">{{ errores.kmenorn }}</span>
+							<br>
+					{% endif %}
+
+					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
+						<input class="input" type="number" value="{{value.j}}" placeholder="j" name="j">
+						<span class="focus-input"></span>
+						<span class="symbol-input">
+							<i class="fas fa-cog" aria-hidden="true"></i>
+						</span>
+					</div>
+					{% if errores.jmenor0 %}
+								<span style="color: red">{{ errores.jmenor0 }}</span>
+								<br>
+						{% endif %}
+						{% if errores.jmenornk %}
+								<span style="color: red">{{ errores.jmenornk }}</span>
+								<br>
+						{% endif %}
+
+					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
+						<input class="input" type="text" value="{{value.alpha}}"  placeholder="α" name="alpha">
+						<span class="focus-input"></span>
+						<span class="symbol-input">
+							<i class="fas fa-cog" aria-hidden="true"></i>
+							
+						</span>
+					</div>
+					{% if errores.alfamenor0 %}
+							<span style="color: red">{{ errores.alfamenor0 }}</span>
+							<br>
+					{% endif %}
+					{% if errores.alfamayor1 %}
+							<span style="color: red">{{ errores.alfamayor1 }}</span>
+							<br>
+					{% endif %}
+
+
+					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
+					    						<span class="focus-input"></span>
+					    <select name="pse">
+				            <option value="ps">Promedio simple</option>
+
+				            <option value="pmd">Promedio móvil doble</option>
+
+				            <option value="pms">Promedio móvil simple</option>
+
+				            <option value="pmda">Promedio móvil doble ajustdo</option>
+				        </select>
+
+						<span class="symbol-input">
+							<i class="fas fa-cog" aria-hidden="true"></i>
+							
+						</span>
+					</div>
+
+					<div class="wrap-input validate-input" data-validate = "Se requiere un valor">
+						<input class="input" type="number" value="{{value.m}}"  placeholder="m" name="m">
+						<span class="focus-input"></span>
+						<span class="symbol-input">
+							<i class="fas fa-cog" aria-hidden="true"></i>
+							
+						</span>
+					</div>
+					{% if errores.mmenor0 %}
+							<span style="color: red">{{ errores.mmenor0 }}</span>
+							<br>
+					{% endif %}
+	
+					<div class="container-login-form-btn">
+						<button class="login-form-btn" name="pib">
+							Aceptar
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	
+
+</body>
+</html>

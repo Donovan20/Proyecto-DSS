@@ -1,0 +1,50 @@
+{% load staticfiles %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Reporte Alumno</title>
+    <link rel="stylesheet" href="{% static 'css/estilopdf.css' %}">
+    <style type="text/css">
+        @page {
+                size: Letter;
+                margin: 1cm;
+            }
+    </style>
+</head>
+<body class="body" style="margin-right: 5mm" onload="imagen()">
+    <h1 style="text-align: center; font-size: 25px">SISTEMA DSS ORIENTADO A LOS DATOS</h1>
+    <h1 style="text-align: center">Gráfico</h1>
+    <img src="../grafica.png">
+    <h1 style="text-align: center; margin-top: 350px">Gráfico de comparacion de mejor resultado con frecuencias</h1>
+    <img src="../grafica2.png">
+    <h1 style="text-align: center">Datos y calculos del PIB</h1>
+    <table border=".5">
+            <thead class="thead">
+                <tr><th colspan="2" style="padding-top: 5px">PERIODOS</th><th colspan="2" style="padding-top: 5px"">FRECUENCIAS</th>
+                <th style="padding-top: 5px">PS</th>
+                <th style="padding-top: 5px">PMS</th><th style="padding-top: 5px">PMD</th><th style="padding-top: 5px">A</th>
+                <th style="padding-top: 5px">B</th><th style="padding-top: 5px">PMDA</th>
+                <th colspan="2"  style="padding-top: 5px">TMAC</th><th style="padding-top: 5px">PTMAC</th>
+                <th style="padding-top: 5px">PSEL</th>
+            </thead>
+        <tbody class="tbody">
+        {% for p, f,ps,pms,pmd,as,bs,pmda,tmac,ptmac,psel in zipped %} 
+            <tr>
+                <td colspan="2"><p style="padding-left: 40px; padding-top: 5px">{{p}}</p></td>
+                <td colspan="2"><p style="padding-left: 40px; padding-top: 5px">{{f}}</p></td>
+                <td><p style="padding-left: 10px; padding-top: 5px">{{ps}}</p></td>
+                <td><p style="padding-left: 10px; padding-top: 5px">{{pms}}</p></td>
+                <td><p style="padding-left: 10px; padding-top: 5px">{{pmd}}</p></td>
+                <td><p style="padding-left: 10px; padding-top: 5px">{{as}}</p></td>
+                <td><p style="padding-left: 10px; padding-top: 5px">{{bs}}</p></td>
+                <td><p style="padding-left: 10px; padding-top: 5px">{{pmda}}</p></td>
+                <td colspan="2"><p style="padding-left: 40px; padding-top: 5px">{{tmac}}</p></td>
+                <td><p style="padding-left: 10px; padding-top: 5px">{{ptmac}}</p></td>
+                <td><p style="padding-left: 10px; padding-top: 5px">{{psel}}</p></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

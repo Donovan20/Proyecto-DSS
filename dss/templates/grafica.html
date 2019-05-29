@@ -1,0 +1,232 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Gráfica</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="{% static 'images/icons/icono.ico' %}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<!--===============================================================================================-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var array1 = {{ p|safe }};
+        var array2 = {{ f|safe }};
+        var array3 = {{ ps|safe }};
+        var array4 = {{ pms|safe }};
+        var array5 = {{ pmd|safe }};
+        var array6 = {{ pmda|safe }};
+        var array8 = {{ ptmac|safe }};
+        var array9 = {{ psel|safe }};
+        var grafica =[]
+
+        for(x in array1){
+          grafica.push([array1[x],array2[x],array3[x],array4[x],array5[x],array6[x], array8[x],array9[x]])
+        }
+
+        var data = new google.visualization.DataTable()
+        data.addColumn('string', 'Periodos');
+        data.addColumn('number', 'Frecuencias');
+        data.addColumn('number', 'Promedio Simple');
+        data.addColumn('number', 'Promedio Móvil Simple');
+        data.addColumn('number', 'Promedio Móvil Doble');
+        data.addColumn('number', 'Promedio Móvil Doble Ajustado');
+        data.addColumn('number', 'P. Tasa de Crecimiento Anual');
+        data.addColumn('number', 'Suavizacion Exponencial');
+        data.addRows(grafica)
+        var options = {
+          title: 'PIB en México',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        
+        google.visualization.events.addListener(chart, 'ready', function () {
+          var vari =  chart.getImageURI();
+          document.getElementById('input').value = vari
+        });
+        chart.draw(data, options);
+        
+      }
+      google.charts.setOnLoadCallback(drawChart2);
+
+      function drawChart2(){
+        var mejor = {{mejor2|safe}};
+        var array1 = {{ p|safe }};
+        var array2 = {{ f|safe }};
+        var grafica2 = []
+
+        for(x in mejor){
+          grafica2.push([array1[x],array2[x],mejor[x]])
+        }
+
+
+        var data = new google.visualization.DataTable()
+        data.addColumn('string', 'Periodos');
+        data.addColumn('number', 'Frecuencias');
+        data.addColumn('number', '{{mejor.Nombre}}');
+        data.addRows(grafica2)
+        var options = {
+          title: 'Frecuencias contra {{mejor.Nombre}}',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart2'));
+        google.visualization.events.addListener(chart, 'ready', function () {
+          var vari =  chart.getImageURI();
+          document.getElementById('input2').value = vari
+          document.getElementById('form').submit();
+        });
+        chart.draw(data, options);
+      }
+    </script>
+
+</head>
+<style>
+  *{
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  body{
+   font-family: sans-serif;
+  }
+  a:link,
+  a:visited{
+   text-decoration: none;
+  }
+  .modal{
+	color: #5F5F5F;
+	text-align: center;
+	font-family: sans-serif;
+  }
+  .modal_contenido{
+   width: 35%;
+   height: 25%;
+   background-color: #fff;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   padding: 2em;
+   border-radius: 1em;
+   opacity: 0;
+   visibility: hidden;
+   transition: all .5s;
+   box-shadow: 0 4px 6px -1px rgba(0.3, 0.3, 0.3, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+   color: #484848;
+  }
+  #modal:target{
+   opacity: 1;
+   visibility: visible;
+  }
+  #modal:target .modal_contenido{
+   opacity: 1;
+   visibility: visible;
+  }
+  .cerrar_modal{
+   color: red;
+   font-size: 2em;
+   position: absolute;
+   top: .5em;
+   right: 1em;
+  }
+  .modal_titulo{
+   color: #238F80;
+   margin-bottom: 1em;
+  }
+  .modal_texto{
+   line-height: 1.5em;
+  }
+.abrir_modal{
+ display: inline-block;
+ color: dodgerblue;
+ margin: 2em;
+}
+ </style>
+<body>
+    <div class="modal" id="modal">
+        <div class="modal_contenido">
+          <a href="#" class="cerrar_modal">&times;</a>
+          <h2 class="modal_titulo">Descarga iniciada</h2>
+          <p class="modal_texto">Se ha generado y descargado tu reporte en formato PDF. <br> Revisa tu carpeta de descargas.</p>
+        </div>
+    </div>
+    <script>
+        function abrirModal(){
+          var mod = document.getElementById("modal")
+          mod.style.visibility="visible"
+          mod.style.color = "dodgerblue"
+          mod.style.margin = "2em"
+          window.location.href="#modal"
+        }
+      </script>
+  {% for message in messages %}
+    {% if message|stringformat:'s' == "ok" %}
+    <script class="modal">
+        function alert(){
+          swal({
+            title: "Se ha generado y descargado tu reporte en formato PDF",
+            text: "Revisa tu carpeta de descargas",
+            icon: "success",
+            confirm: "Aceptar"
+        
+          })
+        
+        }
+        alert()
+        </script>
+    {% endif %}
+  {% endfor %}
+	<nav class="navbar navbar-light nav">
+	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
+	  <form class="form-inline">
+      <a href="{% url 'usuario:acerca' %}" class="btnbar" >Acerca de</a>
+	  	<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
+	    <a href="{% url 'usuario:logout' %}" class="btnbar">Cerrar sesión</a>
+	  </form>
+	</nav>
+
+  <form action="/pdf/pib/" method="POST" target="_blank" id="form">
+    {% csrf_token %}
+    <input type="hidden" value="" id="input" name="input">
+    <input type="hidden" value="" id="input2" name="input2">
+  </form>
+<div class="limiter wrapper">
+		<div class="container-login ">
+			<div class="wrap-login">
+        <h3>La mejor opcion es {{mejor.Nombre}} con un promedio de errores de {{mejor.valor}}</h3>
+        <div class="centrar">
+            <div class="grafica" id="curve_chart" style="width: 1000px; height: 800px;"></div>
+				</div>
+				<div class="centrar">
+            <div class="grafica" id="curve_chart2" style="width: 1000px; height: 800px;"></div>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
