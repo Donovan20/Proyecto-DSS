@@ -1,0 +1,87 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Acerca de</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+<link rel="icon" type="image/png" href="{% static 'images/icons/icono.ico' %}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<nav class="navbar navbar-light nav">
+	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
+	  <form class="form-inline">
+	  	<a href="{% url 'usuario:acerca' %}" class="btnbar" >Acerca de</a>
+	  	<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
+	    <a href="{% url 'usuario:logout' %}" class="btnbar">Cerrar sesión</a>
+	  </form>
+	</nav>
+
+	<div class="limiter">
+		<div class="container-login">
+			<div class="wrap-login">
+				<div class="login-pic js-tilt" data-tilt>
+					<img src="{% static 'images/img-02.png' %}" alt="IMG">
+				</div>
+
+				<form class="login-form validate-form">
+					<span class="login-form-title" style="font-family: Montserrat-Bold; color: #4E5B6D; text-align: left;">
+						ACERCA DE ESTE PROYECTO
+					</span>
+
+					<div class="textoacerca" style="font-family: Montserrat-Bold;">
+						<h2 >ASIGNATURA:</h2><br>
+						<p>Sistemas de soporte a la decisión</p><br><br>
+	
+						<h2>INTEGRANTES:</h2><br>
+						<p>► Ávila Aldama Donovan Azael  -  236895</p><br>
+						<p>► Barrón Oguín María José  -  255374</p><br>
+						<p>► Gómez Zárate Edgar Omar  -  211520</p><br><br>
+						<p>Mayo 2019</p><br>
+
+					</div>
+					
+
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	
+
+	
+<!--===============================================================================================-->	
+	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'vendor/tilt/tilt.jquery.min.js' %}"></script>
+	<script >
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>

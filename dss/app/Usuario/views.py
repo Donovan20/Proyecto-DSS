@@ -9,7 +9,7 @@ from app.Usuario.models import Dolar
 from app.Usuario.models import PIB
 
 # PDF
-from app.Usuario.render import PIBRenderPdf
+from app.Usuario.render import PIBRenderPdf, DolarRenderPdf
 # Variables globales
 dataP = {}
 dataD = {}
@@ -297,6 +297,28 @@ def config_dolar(request, username):
             for c in range(2):
                 ptmac.insert(0,0)
 
+            errores = [
+                {'valor':error_medio_ps,'Nombre':'Promedio simple'},
+                {'valor':error_medio_pms,'Nombre':'Promedio movil simple'},
+                {'valor':error_medio_pmd,'Nombre':'Promedio  movil doble'},
+                {'valor':error_medio_pmda,'Nombre':'Promedio movil doble ajustado'},
+                {'valor':error_medio_ptmac,'Nombre':'P. Tasa de crecimiento anual'},
+                {'valor':error_medio_psel,'Nombre':'Suavizacion exponencial'}
+            ]
+            minimo = min(errores, key=itemgetter("valor"))
+            mejor = []
+            if minimo["Nombre"] == "Promedio simple":
+                mejor = ps
+            elif minimo["Nombre"] == "Promedio movil simple":
+                mejor = pms
+            elif minimo["Nombre"] == "Promedio movil doble":
+                mejor = pmd
+            elif minimo["Nombre"] == "Promedio movil doble ajustado":
+                mejor = pmda
+            elif minimo["Nombre"] == "Suavizacion exponencial":
+                mejor = psel
+            elif minimo["Nombre"] == "P. Tasa de crecimiento anual":
+                mejor = ptmac
             zipped = zip(periodos, frecuencias, ps, pms, pmd, As, Bs, pmda, tmac, ptmac, psel)
             dataD = {
                     'p': periodos,
@@ -310,6 +332,8 @@ def config_dolar(request, username):
                     'tmac': tmac,
                     'ptmac': ptmac,
                     'psel': psel,
+                    'mejor':minimo,
+                    'mejor2':mejor
             }
             contexto = {
                 'zipped': zipped,
@@ -330,6 +354,34 @@ def calculos_pib(request, username):
         messages.success(request, 'ok')
         global dataP
         return render(request,'grafica.html', dataP)
+
+
+def renderDolar(request):
+    imagen = request.POST['input']
+    imagen = imagen.split(',',1)
+    imagen = str.encode(imagen[1])
+    with open("graficaDolar.png", "wb") as fh:
+        fh.write(base64.decodebytes(imagen))
+
+    imagen2 = request.POST['input2']
+    imagen2 = imagen2.split(',',1)
+    imagen2 = str.encode(imagen2[1])
+    with open("graficaDolar2.png", "wb") as fh:
+        fh.write(base64.decodebytes(imagen2))
+    global dataD
+    p = dataD['p']
+    f = dataD['f']
+    ps = dataD['ps']
+    pms = dataD['pms']
+    pmd = dataD['pmd']
+    As = dataD['as']
+    Bs = dataD['bs']
+    pmda = dataD['pmda']
+    tmac = dataD['tmac']
+    ptmac = dataD['ptmac']
+    psel = dataD['psel']
+    zipped = zip(p,f,ps,pms,pmd,As,Bs,pmda,tmac,ptmac,psel)
+    return DolarRenderPdf.render('pdfDolar.html',{'zipped':zipped})
 
 
 def renderPIB(request):
@@ -357,7 +409,6 @@ def renderPIB(request):
     ptmac = dataP['ptmac']
     psel = dataP['psel']
 
-    print(f)
     zipped = zip(p,f,ps,pms,pmd,As,Bs,pmda,tmac,ptmac,psel)
     return PIBRenderPdf.render('pdfPIB.html',{'zipped':zipped})
 
@@ -422,6 +473,7 @@ def configuraciones_pib(request,username):
                             pmda=[]
                             epmda=[]
                             ptmac=[]
+                            eptmac=[]
                             As = []
                             Bs = []
                             epsel=[]
@@ -430,6 +482,7 @@ def configuraciones_pib(request,username):
                             aepms = 0
                             aepmd = 0
                             aepmda = 0
+                            aeptmac = 0
                             aepsel = 0
                             ps.append(0)
                             eps.append(0)
@@ -491,6 +544,16 @@ def configuraciones_pib(request,username):
                             for x in range(1, len(pib)-1):
                                 vf = float(pib[x].frecuencia)
                                 ptmac.append(truncate((float(tmac[x-1])/100)*vf+vf,5))
+                            
+                            for x in range(2,len(pib)-1):
+                                print(float(pib[x].frecuencia))
+                                resta = abs(float(pib[x].frecuencia) - ptmac[x-2])
+                                eptmac.append(truncate(resta,5))
+
+                            for x in range(0, len(eptmac)):
+                                aeptmac = aeptmac + eptmac[x]
+                            aeptmac = aeptmac/(len(eptmac))
+
                             for x in range(0,len(pib)):
                                 p.append(str(pib[x].periodo))
                                 f.append(float(pib[x].frecuencia))
@@ -583,11 +646,14 @@ def configuraciones_pib(request,username):
                             eps[102] = 0
                             ptmac.insert(0,0)
                             ptmac.insert(0,0)
+                            eptmac.insert(0,0)
+                            eptmac.insert(0,0)
                             errores = [
                                 {'valor':aeps,'Nombre':'Promedio simple'},
                                 {'valor':aepms,'Nombre':'Promedio movil simple'},
                                 {'valor':aepmd,'Nombre':'Promedio  movil doble'},
                                 {'valor':aepmda,'Nombre':'Promedio movil doble ajustado'},
+                                {'valor':aeptmac,'Nombre':'P. Tasa de crecimiento anual'},
                                 {'valor':aepsel,'Nombre':'Suavizacion exponencial'}
                             ]
                             minimo = min(errores, key=itemgetter("valor"))
@@ -602,6 +668,8 @@ def configuraciones_pib(request,username):
                                 mejor = pmda
                             elif minimo["Nombre"] == "Suavizacion exponencial":
                                 mejor = psel
+                            elif minimo["Nombre"] == "P. Tasa de crecimiento anual":
+                                mejor = ptmac
                             global dataP
                             dataP = {
                                 'p': p,
@@ -618,15 +686,15 @@ def configuraciones_pib(request,username):
                                 'mejor': minimo,
                                 'mejor2':mejor
                             }
-                            zipped = zip(p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,psel,epsel)
+                            zipped = zip(p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,eptmac,psel,epsel)
                             contexto = {
                                 'zipped':zipped
                             }
                     return render(request,'tablas.html',contexto)
 
-# @login_required
-# def acercade(request):
-#     return render(request, '')
+@login_required
+def acercade(request):
+    return render(request, 'acerca.html')
 
 @login_required
 def logout_view(request):

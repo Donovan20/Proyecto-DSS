@@ -20,3 +20,19 @@ class PIBRenderPdf:
             
         else:
             return HttpResponse("Error Rendering PDF", status=400)
+
+class DolarRenderPdf:
+    
+    @staticmethod
+    def render(path: str, params: dict):
+        template = get_template(path)
+        html = template.render(params)
+        response = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response)
+        if not pdf.err:
+            response = HttpResponse(response.getvalue(), content_type='application/pdf')
+            response['Content-Disposition'] = 'inline; filename=Reporte_Dolar.pdf'
+            return  response
+            
+        else:
+            return HttpResponse("Error Rendering PDF", status=400)
