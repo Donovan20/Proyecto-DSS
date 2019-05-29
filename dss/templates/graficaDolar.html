@@ -59,7 +59,43 @@
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        google.visualization.events.addListener(chart, 'ready', function () {
+          var vari =  chart.getImageURI();
+          document.getElementById('input').value = vari
+        });
+        chart.draw(data, options);
+      }
 
+      google.charts.setOnLoadCallback(drawChart2);
+
+      function drawChart2(){
+        var mejor = {{mejor2|safe}};
+        var array1 = {{ p|safe }};
+        var array2 = {{ f|safe }};
+        var grafica2 = []
+
+        for(x in mejor){
+          grafica2.push([array1[x],array2[x],mejor[x]])
+        }
+
+
+        var data = new google.visualization.DataTable()
+        data.addColumn('string', 'Periodos');
+        data.addColumn('number', 'Frecuencias');
+        data.addColumn('number', '{{mejor.Nombre}}');
+        data.addRows(grafica2)
+        var options = {
+          title: 'Frecuencias contra {{mejor.Nombre}}',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart2'));
+        google.visualization.events.addListener(chart, 'ready', function () {
+          var vari =  chart.getImageURI();
+          document.getElementById('input2').value = vari
+          document.getElementById('form').submit();
+        });
         chart.draw(data, options);
       }
     </script>
@@ -136,15 +172,6 @@
           <p class="modal_texto">Se ha generado y descargado tu reporte en formato PDF. <br> Revisa tu carpeta de descargas.</p>
         </div>
     </div>
-    <script>
-        function abrirModal(){
-          var mod = document.getElementById("modal")
-          mod.style.visibility="visible"
-          mod.style.color = "dodgerblue"
-          mod.style.margin = "2em"
-          window.location.href="#modal"
-        }
-      </script>
   {% for message in messages %}
     {% if message|stringformat:'s' == "ok" %}
     <script class="modal">
@@ -158,26 +185,35 @@
           })
         
         }
+        alert()
         </script>
     {% endif %}
   {% endfor %}
 	<nav class="navbar navbar-light nav">
 	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
 	  <form class="form-inline">
+      <a href="{% url 'usuario:acerca' %}" class="btnbar" >Acerca de</a>
 	    <a href="{% url 'usuario:variables' request.user.username %}" class="btnbar">Página principal</a>
 	    <a href="{% url 'usuario:logout' %}" class="btnbar">Cerrar sesión</a>
 	  </form>
 	</nav>
 
+  <form action="/pdf/dolar/" method="POST" target="_blank" id="form">
+    {% csrf_token %}
+    <input type="hidden" value="" id="input" name="input">
+    <input type="hidden" value="" id="input2" name="input2">
+  </form>
 
-<div class="limiter wrapper">
+  <div class="limiter wrapper">
 		<div class="container-login ">
 			<div class="wrap-login">
         <h3>La mejor opcion es {{mejor.Nombre}} con un promedio de errores de {{mejor.valor}}</h3>
 				<div class="centrar">
 						<div class="grafica" id="curve_chart" style="width: 1000px; height: 800px;"></div>
 				</div>
-
+        <div class="centrar">
+          <div class="grafica" id="curve_chart2" style="width: 1000px; height: 800px;"></div>
+        </div>
 				</form>
 			</div>
 		</div>

@@ -170,10 +170,11 @@ iframe {
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
+	float: left;
 	padding: 15px;
+	padding: 0;
 	background: #33CCB5;
 	background: -webkit-linear-gradient(-135deg, #ffffff, #33CCB5);
-
 }
 
 .wrap-login {
@@ -191,6 +192,19 @@ iframe {
 	padding: 177px 130px 33px 95px;
 }
 
+#wrap-config{
+	padding: 2em;
+}
+
+
+#wrap-config small{
+	color: red;
+	font-size: .9em;
+	margin-top: 0;
+	margin-bottom: 10px;
+	width: 100%;
+	display: block;;
+}
 /*------------------------------------------------------------*/
 .login-pic {
 	width: 316px;
@@ -204,7 +218,7 @@ iframe {
 /*------------------------------------------------------------*/
 .login-form {
  /* width: 290px; */
- height: 400px;
+ min-height: 400px;
 
 }
 
@@ -584,3 +598,12 @@ margin-top: -120px;
   margin-left: auto;
   margin-right: auto;
 }
+
+
+.modal{
+	color: #5F5F5F;
+	text-align: center;
+	font-family: sans-serif;
+
+}
+

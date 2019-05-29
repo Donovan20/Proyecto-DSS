@@ -29,7 +29,7 @@
 	<nav class="navbar navbar-light nav">
 	  <a class="navbar-brand">SISTEMA DSS ORIENTADO A LOS DATOS</a>
 	  <form class="form-inline">
-		<a href="acerca.html" class="btnbar" >Acerca de</a>
+		<a href="{% url 'usuario:acerca' %}" class="btnbar" >Acerca de</a>
 		<a href="{% url 'usuario:variables' request.user.username %}" class="btnbar" >Página principal</a>
 	 	<a href="{% url 'usuario:logout' %}" class="btnbar">Cerrar sesión</a>
 	  </form>
@@ -60,12 +60,13 @@
 								<th scope="col">EABS PMDA</th>
 								<th scope="col">TMAC</th>
 								<th scope="col">PTMAC</th>
+								<th scope="col">EABS PTMAC</th>
 								<th scope="col">PSEL</th>
 								<th scope="col">EABS PSEL</th>
 						</tr>
 						</thead>
 						<tbody>
-							{% for p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,psel,epsel in zipped %}
+							{% for p,f,ps,eps,pms,epms,pmd,epmd,As,Bs,pmda,epmda,tmac,ptmac,eptmac,psel,epsel in zipped %}
 							<tr>
 								<td>{{p}}</td>
 								<td>{{f}}</td>
@@ -81,6 +82,7 @@
 								<td>{{epmda}}</td>
 								<td>{{tmac}}</td>
 								<td>{{ptmac}}</td>
+								<td>{{eptmac}}</td>
 								<td>{{psel}}</td>
 								<td>{{epsel}}</td>
 							</tr>
