@@ -655,8 +655,8 @@ def configuraciones_pib(request,username):
                             epmda.insert(103,0)
                             epsel.insert(103,0)
                             epmd.insert(103,0)
-                            # epms[102] = 0
-                            # eps[102] = 0
+                            epms[102] = 0
+                            eps[102] = 0
                             eptmac.insert(103,0)
                             ptmac.insert(0,0)
                             ptmac.insert(0,0)

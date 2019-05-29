@@ -187,11 +187,10 @@
     <script class="modal">
         function alert(){
           swal({
-            title: "Se ha generado y descargado tu reporte en formato PDF",
-            text: "Revisa tu carpeta de descargas",
+            title: "Se abrirá una nueva página donde verás el reporte.",
+            text: "Una vez abierto podrás descargarlo en formato pdf.",
             icon: "success",
             confirm: "Aceptar"
-        
           })
         
         }
@@ -217,6 +216,7 @@
 		<div class="container-login ">
 			<div class="wrap-login">
         <h3>La mejor opcion es {{mejor.Nombre}} con un promedio de errores de {{mejor.valor}}</h3>
+        <h4>Tipo de comportamiento: <strong>Aleatorio</strong></h4>
         <div class="centrar">
             <div class="grafica" id="curve_chart" style="width: 1000px; height: 800px;"></div>
 				</div>
