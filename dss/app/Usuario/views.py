@@ -102,7 +102,10 @@ def config_dolar(request, username):
             for d in dolar:
                 periodos.append(d.periodo)
                 frecuencias.append(float(d.frecuencia))
-
+            periodos.append('junio 2019')
+            frecuencias.append(0)
+            print(len(frecuencias))
+            print(len(periodos))
             acumuladorPS = 0
             contador = 1
             ps = []
@@ -110,8 +113,8 @@ def config_dolar(request, username):
             k = int(k)
             j = int(j)
             m = int(m)
-            for i in range(1, int(n)):
-                acumuladorPS = acumuladorPS + (dolar[i - 1].frecuencia)
+            for i in range(0, len(frecuencias) - 1):
+                acumuladorPS = acumuladorPS + (dolar[i].frecuencia)
                 ps.append(truncate((acumuladorPS / contador),5))
                 resta = abs(float(dolar[i].frecuencia)-float((acumuladorPS / contador)))
                 eapsd.append(truncate(resta, 5))
@@ -121,7 +124,7 @@ def config_dolar(request, username):
             acumuladorPSM = 0
             pms = []
             eapms = [] # errores absolutos
-            for x in range(int(k)+1, int(n)+1):
+            for x in range(int(k)+1, len(frecuencias)+1):
                 auxiliar = x
                 for i in range(((auxiliar-int(k))-1), auxiliar-1):
                     acumuladorPSM = acumuladorPSM + (dolar[i].frecuencia)
@@ -162,7 +165,7 @@ def config_dolar(request, username):
             
             ptmac = []
             eaptmac = []# errores absolutos
-            for x in range(1, len(frecuencias)):
+            for x in range(1, len(frecuencias) - 1):
                 ptmac.append(truncate((float(frecuencias[x])+(float(frecuencias[x])*(tmac[x-1]/100))),5))
             
             psel = []
@@ -296,6 +299,16 @@ def config_dolar(request, username):
                 tmac.insert(0,0)
             for c in range(2):
                 ptmac.insert(0,0)
+
+            print(len(ps))
+            print(len(pms))
+            print(len(pmd))
+            print(len(As))
+            print(len(Bs))
+            print(len(pmda))
+            print(len(tmac))
+            print(len(ptmac))
+            print(len(psel))
 
             errores = [
                 {'valor':error_medio_ps,'Nombre':'Promedio simple'},
@@ -642,9 +655,9 @@ def configuraciones_pib(request,username):
                             epmda.insert(103,0)
                             epsel.insert(103,0)
                             epmd.insert(103,0)
+                            # epms[102] = 0
+                            # eps[102] = 0
                             eptmac.insert(103,0)
-                            epms[102] = 0
-                            eps[102] = 0
                             ptmac.insert(0,0)
                             ptmac.insert(0,0)
                             eptmac.insert(0,0)
